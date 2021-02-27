@@ -1,6 +1,6 @@
-From 6e23d3e73563b867b87b423279755381cc2f8dec Mon Sep 17 00:00:00 2001
+From 1e5dd22bd5a3fa4426fac0a54ecf1e359b89c668 Mon Sep 17 00:00:00 2001
 From: trickerer <onlysuffering@gmail.com>
-Date: Sun, 24 Jan 2021 14:20:45 +0700
+Date: Mon, 8 Feb 2021 09:48:07 +0700
 Subject: [PATCH] NPCBots
 
 ---
@@ -26,13 +26,15 @@ Subject: [PATCH] NPCBots
  sql/Bots/updates/world/2021_01_04_npc_text.sql     |    18 +
  sql/Bots/updates/world/2021_01_05_npc_text.sql     |    12 +
  sql/Bots/updates/world/2021_01_08_npc_text.sql     |     8 +
+ sql/Bots/updates/world/2021_02_01_npc_text.sql     |     1 +
  src/common/Utilities/EventProcessor.h              |     1 +
  .../Database/Implementation/CharacterDatabase.cpp  |    18 +
  .../Database/Implementation/CharacterDatabase.h    |    14 +
+ src/server/game/AI/CoreAI/UnitAI.cpp               |     3 +
  src/server/game/AI/NpcBots/bot_Events.h            |    53 +
- src/server/game/AI/NpcBots/bot_GridNotifiers.h     |  1299 ++
- src/server/game/AI/NpcBots/bot_ai.cpp              | 15689 +++++++++++++++++++
- src/server/game/AI/NpcBots/bot_ai.h                |   614 +
+ src/server/game/AI/NpcBots/bot_GridNotifiers.h     |  1329 ++
+ src/server/game/AI/NpcBots/bot_ai.cpp              | 16239 +++++++++++++++++++
+ src/server/game/AI/NpcBots/bot_ai.h                |   625 +
  src/server/game/AI/NpcBots/bot_archmage_ai.cpp     |   398 +
  src/server/game/AI/NpcBots/bot_bm_ai.cpp           |   936 ++
  src/server/game/AI/NpcBots/bot_dark_ranger_ai.cpp  |   620 +
@@ -43,23 +45,23 @@ Subject: [PATCH] NPCBots
  src/server/game/AI/NpcBots/bot_mage_ai.cpp         |  1823 +++
  src/server/game/AI/NpcBots/bot_paladin_ai.cpp      |  2737 ++++
  src/server/game/AI/NpcBots/bot_priest_ai.cpp       |  2097 +++
- src/server/game/AI/NpcBots/bot_rogue_ai.cpp        |  2017 +++
+ src/server/game/AI/NpcBots/bot_rogue_ai.cpp        |  2030 +++
  src/server/game/AI/NpcBots/bot_shaman_ai.cpp       |  2812 ++++
  src/server/game/AI/NpcBots/bot_spellbreaker_ai.cpp |   580 +
  src/server/game/AI/NpcBots/bot_sphynx_ai.cpp       |   610 +
  src/server/game/AI/NpcBots/bot_warlock_ai.cpp      |  2074 +++
  src/server/game/AI/NpcBots/bot_warrior_ai.cpp      |  2248 +++
  src/server/game/AI/NpcBots/botcommands.cpp         |  1580 ++
- src/server/game/AI/NpcBots/botcommon.h             |  1081 ++
+ src/server/game/AI/NpcBots/botcommon.h             |  1086 ++
  src/server/game/AI/NpcBots/botdatamgr.cpp          |   519 +
  src/server/game/AI/NpcBots/botdatamgr.h            |   128 +
  src/server/game/AI/NpcBots/botdpstracker.cpp       |   131 +
  src/server/game/AI/NpcBots/botdpstracker.h         |    36 +
- src/server/game/AI/NpcBots/botdump.cpp             |   951 ++
+ src/server/game/AI/NpcBots/botdump.cpp             |   946 ++
  src/server/game/AI/NpcBots/botdump.h               |    47 +
  src/server/game/AI/NpcBots/botgiver.cpp            |   263 +
- src/server/game/AI/NpcBots/botmgr.cpp              |  1425 ++
- src/server/game/AI/NpcBots/botmgr.h                |   183 +
+ src/server/game/AI/NpcBots/botmgr.cpp              |  1437 ++
+ src/server/game/AI/NpcBots/botmgr.h                |   191 +
  src/server/game/AI/NpcBots/bpet_ai.cpp             |  2274 +++
  src/server/game/AI/NpcBots/bpet_ai.h               |   165 +
  src/server/game/AI/NpcBots/bpet_archmage.cpp       |   139 +
@@ -79,7 +81,7 @@ Subject: [PATCH] NPCBots
  src/server/game/DataStores/DBCStores.h             |     2 +-
  src/server/game/DungeonFinding/LFGMgr.cpp          |   176 +
  src/server/game/DungeonFinding/LFGScripts.cpp      |     1 +
- src/server/game/Entities/Creature/Creature.cpp     |   451 +
+ src/server/game/Entities/Creature/Creature.cpp     |   456 +
  src/server/game/Entities/Creature/Creature.h       |    79 +
  src/server/game/Entities/Creature/CreatureData.h   |     6 +-
  .../game/Entities/Creature/TemporarySummon.cpp     |    32 +
@@ -111,7 +113,7 @@ Subject: [PATCH] NPCBots
  src/server/game/Spells/Spell.cpp                   |   138 +
  src/server/game/Spells/Spell.h                     |     3 +
  src/server/game/Spells/SpellEffects.cpp            |   159 +
- src/server/game/Spells/SpellInfo.cpp               |    43 +
+ src/server/game/Spells/SpellInfo.cpp               |    46 +
  src/server/scripts/Commands/cs_npc.cpp             |    31 +
  .../Northrend/Naxxramas/boss_four_horsemen.cpp     |     4 +-
  src/server/scripts/Spells/spell_dk.cpp             |    17 +
@@ -127,8 +129,8 @@ Subject: [PATCH] NPCBots
  src/server/shared/DataStores/DBCStructure.h        |    11 +-
  src/server/shared/DataStores/DBCfmt.h              |     2 +-
  src/server/shared/SharedDefines.h                  |     7 +
- src/server/worldserver/worldserver.conf.dist       |   250 +
- 124 files changed, 62444 insertions(+), 21 deletions(-)
+ src/server/worldserver/worldserver.conf.dist       |   275 +
+ 126 files changed, 63105 insertions(+), 21 deletions(-)
  create mode 100644 sql/Bots/1_world_bot_appearance.sql
  create mode 100644 sql/Bots/2_world_bot_extras.sql
  create mode 100644 sql/Bots/3_world_bots.sql
@@ -151,6 +153,7 @@ Subject: [PATCH] NPCBots
  create mode 100644 sql/Bots/updates/world/2021_01_04_npc_text.sql
  create mode 100644 sql/Bots/updates/world/2021_01_05_npc_text.sql
  create mode 100644 sql/Bots/updates/world/2021_01_08_npc_text.sql
+ create mode 100644 sql/Bots/updates/world/2021_02_01_npc_text.sql
  create mode 100644 src/server/game/AI/NpcBots/bot_Events.h
  create mode 100644 src/server/game/AI/NpcBots/bot_GridNotifiers.h
  create mode 100644 src/server/game/AI/NpcBots/bot_ai.cpp
@@ -3326,6 +3329,14 @@ index 0000000..f45e102
 +('70641','Grab on ','-1'),
 +('70642','my ','-1'),
 +('70643','<Exit Vehicle>','-1');
+diff --git a/sql/Bots/updates/world/2021_02_01_npc_text.sql b/sql/Bots/updates/world/2021_02_01_npc_text.sql
+new file mode 100644
+index 0000000..6356dea
+--- /dev/null
++++ b/sql/Bots/updates/world/2021_02_01_npc_text.sql
+@@ -0,0 +1 @@
++UPDATE `npc_text` SET `text0_0`='Auto-equip' WHERE (`ID`='70489');
+\ No newline at end of file
 diff --git a/src/common/Utilities/EventProcessor.h b/src/common/Utilities/EventProcessor.h
 index 2bf6821..0b8261e 100644
 --- a/src/common/Utilities/EventProcessor.h
@@ -3392,6 +3403,20 @@ index 7404a61..5007f6d 100644
      MAX_CHARACTERDATABASE_STATEMENTS
  };
  
+diff --git a/src/server/game/AI/CoreAI/UnitAI.cpp b/src/server/game/AI/CoreAI/UnitAI.cpp
+index f98e958..5bf87e3 100644
+--- a/src/server/game/AI/CoreAI/UnitAI.cpp
++++ b/src/server/game/AI/CoreAI/UnitAI.cpp
+@@ -268,6 +268,9 @@ bool DefaultTargetSelector::operator()(Unit const* target) const
+         return false;
+ 
+     if (_playerOnly && (target->GetTypeId() != TYPEID_PLAYER))
++        //npcbot: allow to target bots
++        //if (!(target->GetTypeId() == TYPEID_UNIT && target->ToCreature()->IsNPCBot()))
++        //end npcbot
+         return false;
+ 
+     if (_dist > 0.0f && !_me->IsWithinCombatRange(target, _dist))
 diff --git a/src/server/game/AI/NpcBots/bot_Events.h b/src/server/game/AI/NpcBots/bot_Events.h
 new file mode 100644
 index 0000000..35a9695
@@ -3453,13 +3478,14 @@ index 0000000..35a9695
 +#endif
 diff --git a/src/server/game/AI/NpcBots/bot_GridNotifiers.h b/src/server/game/AI/NpcBots/bot_GridNotifiers.h
 new file mode 100644
-index 0000000..95e1547
+index 0000000..2838124
 --- /dev/null
 +++ b/src/server/game/AI/NpcBots/bot_GridNotifiers.h
-@@ -0,0 +1,1299 @@
+@@ -0,0 +1,1329 @@
 +#ifndef _BOT_GRIDNOTIFIERS_H
 +#define _BOT_GRIDNOTIFIERS_H
 +
++#include "DynamicObject.h"
 +#include "Corpse.h"
 +#include "Group.h"
 +#include "ObjectAccessor.h"
@@ -4650,6 +4676,35 @@ index 0000000..95e1547
 +    NearbyLootableCreatureCheck(NearbyLootableCreatureCheck const&);
 +};
 +
++//AoE caster dynobject
++class NearbyHostileAoEDynobjectCheck
++{
++    public:
++        explicit NearbyHostileAoEDynobjectCheck(Unit const* unit, float maxdist) : _me(unit), _range(maxdist) { }
++        bool operator()(WorldObject const* u) const
++        {
++            DynamicObject const* dObj = u->ToDynObject();
++            if (!dObj || !dObj->GetSpellId() || !dObj->GetCaster())
++                return false;
++            if (dObj->GetByteValue(DYNAMICOBJECT_BYTES, 0) != DYNAMIC_OBJECT_AREA_SPELL)
++                return false;
++            if (!dObj->InSamePhase(_me))
++                return false;
++            if (!dObj->GetRadius())
++                return false;
++            if (!dObj->IsWithinDistInMap(_me, _range))
++                return false;
++            if (!dObj->GetCaster()->IsValidAttackTarget(_me))
++                return false;
++
++            return true;
++        }
++    private:
++        Unit const* _me;
++        float _range;
++        NearbyHostileAoEDynobjectCheck(NearbyHostileAoEDynobjectCheck const&);
++};
++
 +namespace BOTAI_PRED
 +{
 +    class HealTargetExclude
@@ -4758,10 +4813,10 @@ index 0000000..95e1547
 +#endif
 diff --git a/src/server/game/AI/NpcBots/bot_ai.cpp b/src/server/game/AI/NpcBots/bot_ai.cpp
 new file mode 100644
-index 0000000..09290a5
+index 0000000..0efe37e
 --- /dev/null
 +++ b/src/server/game/AI/NpcBots/bot_ai.cpp
-@@ -0,0 +1,15689 @@
+@@ -0,0 +1,16239 @@
 +#include "bot_ai.h"
 +//#include "botcommon.h"
 +#include "bot_Events.h"
@@ -5310,6 +5365,9 @@ index 0000000..09290a5
 +    if (me->IsMounted() && !(spellInfo->Attributes & SPELL_ATTR0_CASTABLE_WHILE_MOUNTED))
 +        return SPELL_FAILED_NOT_MOUNTED;
 +
++    if (me->GetMap()->IsDungeon() && spellInfo->CastTimeEntry && !CCed(me, true) && IsWithinAoERadius(*me))
++        return SPELL_FAILED_NOT_IDLE;
++
 +    if (int32(me->GetPower(Powers(spellInfo->PowerType))) < spellInfo->CalcPowerCost(me, spellInfo->GetSchoolMask()))
 +        return SPELL_FAILED_NO_POWER;
 +
@@ -5523,7 +5581,12 @@ index 0000000..09290a5
 +    targets.SetUnitTarget(victim);
 +    Spell* spell = new Spell(me, m_botSpellInfo, flags);
 +    spell->prepare(targets); //sets current spell if succeed
-+
++/*
++    SpellCastResult result = spell->CheckCast(true);
++    if (result != SPELL_CAST_OK)
++        TC_LOG_ERROR("entities.player", "doCast(): %s (%u) by %s on %s failed with %u",
++        m_botSpellInfo->SpellName[0], spellId, me->GetName().c_str(), victim->GetName().c_str(), uint32(result));
++*/
 +    bool casted = triggered; //triggered casts are casted immediately
 +    for (uint8 i = 0; i != CURRENT_MAX_SPELL; ++i)
 +    {
@@ -5640,7 +5703,7 @@ index 0000000..09290a5
 +    Unit const* bmover = me->GetVehicle() ? me->GetVehicleBase() : me;
 +    Unit* mmover = master->GetVehicle() ? master->GetVehicleBase() : master;
 +    uint32 movFlags = mmover->m_movementInfo.GetMovementFlags();
-+    float size = bmover->GetCombatReach()/3.f;
++    float size = bmover->GetCombatReach() * 2;
 +    if (bmover->CanFly())
 +    {
 +        angle += mmover->GetOrientation();
@@ -8540,6 +8603,154 @@ index 0000000..09290a5
 +    return true;
 +}
 +//POSITION
++AoeSpotsVec const& bot_ai::GetAoeSpots() const
++{
++    return master->GetBotMgr()->GetAoeSpots();
++}
++
++void bot_ai::CalculateAoeSpots(Unit const* unit, AoeSpotsVec& spots)
++{
++    std::list<WorldObject*> doList;
++    NearbyHostileAoEDynobjectCheck check(unit, 60.f);
++    Trinity::WorldObjectListSearcher<NearbyHostileAoEDynobjectCheck> searcher(unit, doList, check, GRID_MAP_TYPE_MASK_DYNAMICOBJECT);
++    //unit->VisitNearbyObject(60.f, searcher);
++    Cell::VisitAllObjects(unit, searcher, 60.f);
++
++    //if (!doList.empty())
++    //    TC_LOG_ERROR("scripts", "CalculateAoeSpots %u aoes around %s", uint32(doList.size()), unit->GetName().c_str());
++
++    //filter and add to list
++    DynamicObject const* dObj;
++    SpellInfo const* spellInfo;
++    for (std::list<WorldObject*>::const_iterator ci = doList.begin(); ci != doList.end(); ++ci)
++    {
++        dObj = (*ci)->ToDynObject();
++        ASSERT_NODEBUGINFO(dObj);
++        ASSERT_NODEBUGINFO(dObj->GetSpellId());
++        spellInfo = sSpellMgr->GetSpellInfo(dObj->GetSpellId());
++        if (IsPeriodicDynObjAOEDamage(spellInfo))
++        {
++            //TC_LOG_ERROR("scripts", "CalculateAoeSpots found %s's aoe %s (%u) radius %.2f size %.2f",
++            //    dObj->GetCaster()->GetName().c_str(), spellInfo->SpellName[0], spellInfo->Id, dObj->GetRadius(), dObj->GetObjectSize());
++
++            float radius = dObj->GetRadius() + DEFAULT_PLAYER_BOUNDING_RADIUS;
++            radius += (unit->GetVehicle() ? unit->GetVehicleBase()->GetCombatReach() : DEFAULT_PLAYER_COMBAT_REACH) * 1.2f;
++            spots.push_back(AoeSpotsVec::value_type(*dObj, radius));
++        }
++    }
++
++    //Additional: aoe coming from spawned npcs
++
++    //The Eye of Eternity
++    if (unit->GetMapId() == 616 && unit->GetVehicle())
++    {
++        std::list<Creature*> cList;
++        Trinity::AllCreaturesOfEntryInRange check2(unit->GetVehicleBase(), 30592, 60.f); //Static Field
++        Trinity::CreatureListSearcher<Trinity::AllCreaturesOfEntryInRange> searcher2(unit->GetVehicleBase(), cList, check2);
++        //unit->GetVehicleBase()->VisitNearbyObject(60.f, searcher2);
++        Cell::VisitAllObjects(unit->GetVehicleBase(), searcher2, 60.f);
++
++        spellInfo = sSpellMgr->GetSpellInfo(57429); //Static Field damage
++        for (std::list<Creature*>::const_iterator ci = cList.begin(); ci != cList.end(); ++ci)
++        {
++            float radius = spellInfo->Effects[0].CalcRadius() + unit->GetVehicleBase()->GetCombatReach() * 1.2f;
++            spots.push_back(AoeSpotsVec::value_type(*(*ci), radius));
++        }
++    }
++    //Zul'Aman
++    else if (unit->GetMapId() == 568)
++    {
++        std::list<Creature*> cList;
++        Trinity::AllCreaturesOfEntryInRange check2(unit, 23920, 40.f); //Fire Bomb (Zul'Aman)
++        Trinity::CreatureListSearcher<Trinity::AllCreaturesOfEntryInRange> searcher2(unit, cList, check2);
++        //unit->VisitNearbyObject(40.f, searcher2);
++        Cell::VisitAllObjects(unit, searcher2, 40.f);
++
++        spellInfo = sSpellMgr->GetSpellInfo(42630); //Fire Bomb
++        for (std::list<Creature*>::const_iterator ci = cList.begin(); ci != cList.end(); ++ci)
++        {
++            float radius = spellInfo->Effects[0].CalcRadius() + DEFAULT_PLAYER_COMBAT_REACH * 1.2f;
++            spots.push_back(AoeSpotsVec::value_type(*(*ci), radius));
++        }
++    }
++}
++
++void bot_ai::CalculateAoeSafeSpots(Unit* target, float maxdist, AoeSafeSpotsVec& safespots) const
++{
++    if (!IAmFree() && !GetAoeSpots().empty())
++    {
++        //find 200 safe spots
++        Position ppos;
++        float distdelta = maxdist / 200.f;
++        float angledelta = M_PI / 20.f;
++        float aoedist = 0.f;
++        float aoeangle;
++        for (uint8 i = 0; i < 5; ++i)
++        {
++            aoeangle = 0.0f;
++            for (uint8 j = 0; j < 40; ++j)
++            {
++                aoedist += distdelta;
++                aoeangle += angledelta;
++
++                ppos = target->GetFirstCollisionPosition(aoedist, Position::NormalizeOrientation(aoeangle - target->GetOrientation()));
++                bool toofaraway = master->GetDistance(ppos) > maxdist;
++
++                if (!toofaraway && !IsWithinAoERadius(ppos))
++                    safespots.push_back(ppos);
++            }
++        }
++    }
++}
++
++bool bot_ai::IsPeriodicDynObjAOEDamage(SpellInfo const* spellInfo)
++{
++    if (!spellInfo->IsPositive())
++    {
++        for (uint8 i = 0; i != MAX_SPELL_EFFECTS; ++i)
++        {
++            if (spellInfo->Effects[i].Effect == SPELL_EFFECT_PERSISTENT_AREA_AURA &&
++                spellInfo->Effects[i].ApplyAuraName != 0)
++            {
++                switch (spellInfo->Effects[i].ApplyAuraName)
++                {
++                    case SPELL_AURA_PERIODIC_DAMAGE:
++                    case SPELL_AURA_PERIODIC_DAMAGE_PERCENT:
++                    case SPELL_AURA_POWER_BURN:
++                    case SPELL_AURA_PERIODIC_LEECH:
++                    //Most of these are damaging spells
++                    case SPELL_AURA_PERIODIC_TRIGGER_SPELL:
++                    case SPELL_AURA_PERIODIC_TRIGGER_SPELL_WITH_VALUE:
++                    //Scripted spells (mostly, some of these are wrong or not periodic damage)
++                    case SPELL_AURA_PERIODIC_DUMMY:
++                    //Channeled spells with SPELL_AURA_PERIODIC_TRIGGER_SPELL -> damage on TARGET_DEST_CHANNEL_TARGET (mostly)
++                    case SPELL_AURA_DUMMY:
++                        return true;
++                    default:
++                        break;
++                }
++            }
++        }
++    }
++    return false;
++}
++bool bot_ai::IsWithinAoERadius(Position const& pos) const
++{
++    if (!IAmFree())
++    {
++        AoeSpotsVec const& spots = GetAoeSpots();
++        if (!spots.empty())
++        {
++            Unit const* mover = me->GetVehicle() ? me->GetVehicleBase() : me;
++            float cr_diff = mover->GetCombatReach() - DEFAULT_PLAYER_COMBAT_REACH;
++            for (AoeSpotsVec::const_iterator ci = spots.begin(); ci != spots.end(); ++ci)
++                if (pos.GetExactDist(&ci->first) - cr_diff < ci->second)
++                    return true;
++        }
++    }
++
++    return false;
++}
 +//Returns attack range based on given range
 +//If mounted: 20%
 +//If ranged: 125%
@@ -8558,7 +8769,7 @@ index 0000000..09290a5
 +    return origRange;
 +}
 +//Ranged attack position
-+void bot_ai::CalculateAttackPos(Unit* target, Position& pos) const
++void bot_ai::CalculateAttackPos(Unit* target, Position& pos, bool& force) const
 +{
 +    uint8 followdist = IAmFree() ? BotMgr::GetBotFollowDistDefault() : master->GetBotMgr()->GetBotFollowDist();
 +    uint8 rangeMode = IAmFree() ? uint8(BOT_ATTACK_RANGE_LONG) : master->GetBotMgr()->GetBotAttackRangeMode();
@@ -8571,8 +8782,8 @@ index 0000000..09290a5
 +        8 + urand(followdist/2, followdist/2 + 5) :/*23-33 at 40, 18-28 at 30*/
 +        5 + urand(followdist/3, followdist/3 + 5)/*18-23 at 40, 15-20 at 30*/,
 +        angle = target->GetAbsoluteAngle(me);
-+    bool boss = target->GetTypeId() == TYPEID_UNIT &&
-+        (target->ToCreature()->isWorldBoss() || target->ToCreature()->IsDungeonBoss() || target->ToCreature()->GetCreatureTemplate()->rank == CREATURE_ELITE_WORLDBOSS);
++    //bool boss = target->GetTypeId() == TYPEID_UNIT &&
++    //    (target->ToCreature()->isWorldBoss() || target->ToCreature()->IsDungeonBoss() || target->ToCreature()->GetCreatureTemplate()->rank == CREATURE_ELITE_WORLDBOSS);
 +    //most ranged classes have some sort of 20yd spell
 +    if (rangeMode != BOT_ATTACK_RANGE_EXACT)
 +        dist = std::min<float>(dist, GetSpellAttackRange(rangeMode == BOT_ATTACK_RANGE_LONG) - 4.f);
@@ -8612,14 +8823,27 @@ index 0000000..09290a5
 +            else
 +                ppos = target->GetFirstCollisionPosition(dist, Position::NormalizeOrientation(angle - target->GetOrientation()));
 +            //target->GetNearPoint(me->GetVehicleBase(), x, y, z, 0.f, dist, Position::NormalizeOrientation(angle));
-+            if (master->GetDistance(ppos) < (followdist > 30.f ? 60.f : followdist < 10 ? 20.f : float(followdist*2)))
++
++            bool toofar = master->GetDistance(ppos) > (followdist > 30.f ? 60.f : followdist < 10 ? 20.f : float(followdist*2));
++            bool isinaoe = (i == 0 && me->GetVehicleBase()->GetDistance(ppos) < 4.f && IsWithinAoERadius(*me->GetVehicleBase())) || IsWithinAoERadius(ppos);
++            if (!toofar && !isinaoe)
 +                break;
 +
-+            //angle = target->GetAbsoluteAngle(master);
-+            if (i >= 1)
-+                angle += -(clockwise) * angleDelta1/* * i*/;
-+            if (i >= 2)
-+                dist = std::max(0.f, dist - 5.f);
++            if (toofar)
++            {
++                if (i >= 1)
++                    angle += -(clockwise) * angleDelta1/* * i*/;
++                if (i >= 2)
++                    dist = std::max(0.f, dist - 5.f);
++            }
++            if (isinaoe)
++            {
++                //TC_LOG_ERROR("scripts", "CalculateAttackPos %s veh skipped aoe pos", me->GetName().c_str());
++                if (me->GetVehicleBase()->CanFly())
++                    ppos.m_positionZ += (master->GetPositionZ() < target->GetPositionZ()) ? -8.f : 8.f;
++                else
++                    angle += angleDelta2 * 2.f;
++            }
 +        }
 +
 +        pos.Relocate(ppos);
@@ -8630,39 +8854,72 @@ index 0000000..09290a5
 +        return;
 +    }
 +
-+    if (boss && IsTank())
-+        angle += M_PI*(IsMelee() ? 0.5f : 0.33f);
++    AoeSpotsVec const& aoespots = IAmFree() ? AoeSpotsVec() : GetAoeSpots();
++
++    ppos.Relocate(me);
++    bool toofaraway = master->GetDistance(ppos) > (followdist > 38 ? 38.f : followdist < 20 ? 20.f : float(followdist));
++    bool outoflos = !target->IsWithinLOS(ppos.m_positionX, ppos.m_positionY, ppos.m_positionZ);
++    bool isinaoe = IsWithinAoERadius(ppos);
++    if (!toofaraway && !outoflos && !isinaoe)
++    {
++        //if (!aoespots.empty())
++        //    TC_LOG_ERROR("scripts", "CalculateAttackPos %s spot is still safe", me->GetName().c_str());
++
++        pos.Relocate(ppos);
++        return;
++    }
++
++    AoeSafeSpotsVec safespots;
++    CalculateAoeSafeSpots(target, float(followdist), safespots);
 +
 +    for (uint8 i = 0; i < 5; ++i)
 +    {
 +        ppos = target->GetFirstCollisionPosition(dist, Position::NormalizeOrientation(angle - target->GetOrientation()));
-+        //target->GetNearPoint(me, x, y, z, dist, Position::NormalizeOrientation(angle));
-+        bool toofaraway = master->GetDistance(/*x,y,z*/ppos) > (followdist > 38.f ? 38.f : followdist < 20 ? 20.f : float(followdist));
-+        bool outoflos = !target->IsWithinLOS(/*x,y,z*/ppos.m_positionX, ppos.m_positionY, ppos.m_positionZ);
-+        if (!toofaraway && !outoflos)
++        toofaraway = master->GetDistance(/*x,y,z*/ppos) > (followdist > 38 ? 38.f : followdist < 20 ? 20.f : float(followdist));
++        if (!toofaraway)
 +            break;
 +
 +        if (toofaraway)
 +        {
 +            angle = target->GetAbsoluteAngle(master);
 +            if (i >= 3)
-+                angle += angleDelta1;
++                angle += angleDelta1 * (i - 3 + 1);
 +            if (i >= 1 && i <= 3)
 +                dist = std::max<float>(0.f, dist - 5.f);
 +        }
-+        if (outoflos)
++    }
++
++    if (!safespots.empty())
++    {
++        //find closest safe spot
++        Position& optimalPos = safespots.front();
++        float mindist = 100.f;
++        float curdist;
++        for (std::vector<Position>::const_iterator ci = safespots.begin(); ci != safespots.end(); ++ci)
 +        {
-+            if (rangeMode != BOT_ATTACK_RANGE_EXACT)
-+                dist *= i >= 3 ? 0.1f : 0.33f;
-+            if (i >= 4 && IAmFree())
-+                angle += angleDelta2;
++            curdist = ppos.GetExactDist2d(&(*ci));
++            if (curdist < mindist)
++            {
++                optimalPos = *ci;
++                mindist = curdist;
++            }
 +        }
++
++        //TC_LOG_ERROR("scripts", "CalculateAttackPos %u safe spots, chosen at dist %.2f", uint32(safespots.size()), mindist);
++        pos.Relocate(optimalPos);
++        force = true;
++        return;
++    }
++    else if (!aoespots.empty() && !IAmFree())
++    {
++        pos.Relocate(master);
++        force = true;
++        return;
 +    }
 +
 +    pos.Relocate(ppos);
-+    //pos.m_positionX = x;
-+    //pos.m_positionY = y;
-+    //pos.m_positionZ = z;
++    if (!me->IsWithinLOSInMap(target))
++        force = true;
 +}
 +// Forces bot to chase opponent (if ranged then distance depends on follow distance)
 +void bot_ai::GetInPosition(bool force, Unit* newtarget, Position* mypos)
@@ -8698,7 +8955,7 @@ index 0000000..09290a5
 +    }
 +
 +    uint8 followdist = IAmFree() ? BotMgr::GetBotFollowDistDefault() : master->GetBotMgr()->GetBotFollowDist();
-+    if (HasRole(BOT_ROLE_RANGED) || HasVehicleRoleOverride(BOT_ROLE_RANGED))
++    if (HasRole(BOT_ROLE_RANGED) || HasVehicleRoleOverride(BOT_ROLE_RANGED) || (!IAmFree() && !GetAoeSpots().empty()))
 +    {
 +        //do not allow constant runaway from player
 +        if (!force && newtarget->GetTypeId() == TYPEID_PLAYER &&
@@ -8706,7 +8963,10 @@ index 0000000..09290a5
 +            return;
 +
 +        if (!mypos)
-+            CalculateAttackPos(newtarget, attackpos);
++        {
++            force = false;
++            CalculateAttackPos(newtarget, attackpos, force);
++        }
 +        else
 +        {
 +            attackpos.m_positionX = mypos->m_positionX;
@@ -8715,7 +8975,7 @@ index 0000000..09290a5
 +        }
 +        //TC_LOG_ERROR("scripts", "GetInPosition %s to %s dist %.2f, to pos %.2f", me->GetName().c_str(),
 +        //    newtarget->GetName().c_str(), me->GetExactDist2d(newtarget), me->GetExactDist2d(&attackpos));
-+        if (mover->GetExactDist2d(&attackpos) > 4.f || !mover->IsWithinLOSInMap(newtarget))
++        if (force || mover->GetExactDist2d(&attackpos) > 4.f)
 +        {
 +            BotMovement(BOT_MOVE_POINT, &attackpos);
 +            //me->GetMotionMaster()->MovePoint(newtarget->GetMapId(), attackpos);
@@ -8727,9 +8987,7 @@ index 0000000..09290a5
 +    }
 +    else
 +    {
-+        Vehicle* veh = me->GetVehicle();
-+        Unit* mover = CanBotMoveVehicle() ? veh->GetBase() : !veh ? me : nullptr;
-+        if (mover && !JumpingOrFalling() && ((!mover->HasUnitState(UNIT_STATE_CHASE) && !mover->isMoving()) || (!mover->HasUnitState(UNIT_STATE_CHASE_MOVE) && mover->GetDistance(newtarget) > 1.5f)))
++        if (!JumpingOrFalling() && ((!mover->HasUnitState(UNIT_STATE_CHASE) && !mover->isMoving()) || (!mover->HasUnitState(UNIT_STATE_CHASE_MOVE) && mover->GetDistance(newtarget) > 1.5f)))
 +            BotMovement(BOT_MOVE_CHASE, nullptr, newtarget);
 +            //me->GetMotionMaster()->MoveChase(newtarget);
 +    }
@@ -8739,6 +8997,86 @@ index 0000000..09290a5
 +        if (!me->Attack(newtarget, !HasRole(BOT_ROLE_RANGED)))
 +            me->SetInFront(newtarget);
 +    }
++}
++//Bots cannot dodge/parry from behind so try to condense enemies at front
++//opponent is always valid
++void bot_ai::AdjustTankingPosition() const
++{
++    //problem: chasing unit is constantly moving. Whoever the hell did that
++//    if (/*!IsTank() || */!me->IsInCombat() || me->isMoving() || IsCasting() ||
++//        JumpingOrFalling() || CCed(me, true) || Rand() > 10 + 20*me->GetMap()->IsDungeon())
++//        return;
++    if (/*!IsTank() || */!me->IsInCombat() || IsCasting() || me->GetVehicle() ||
++        JumpingOrFalling() || CCed(me, true) || Rand() > 10 + 20*me->GetMap()->IsDungeon() ||
++        HasBotCommandState(BOT_COMMAND_MASK_UNMOVING))
++        return;
++
++    Unit::AttackerSet const& myattackers = me->getAttackers();
++    if (myattackers.size() < 2)
++        return;
++
++    //TC_LOG_ERROR("entities.player", "AdjustTankingPosition() by %s", me->GetName().c_str());
++
++    uint32 bCount = 0;
++    for (Unit::AttackerSet::const_iterator itr = myattackers.begin(); itr != myattackers.end(); ++itr)
++    {
++        if (/*!CCed(*itr) && */(*itr)->GetDistance(me) < 5 && !me->HasInArc(M_PI, *itr))
++            ++bCount;
++            //if (++bCount)
++            //    break;
++    }
++
++    if (bCount == 0)
++        return;
++
++    //TC_LOG_ERROR("entities.player", "AdjustTankingPosition(): atts %u, behind %u", uint32(myattackers.size()), bCount);
++
++    //calculate new position
++    float x = me->GetPositionX();
++    float y = me->GetPositionY();
++    float z = me->GetPositionZ();
++    float ori = CCed(opponent, true) ? me->GetOrientation() + 0.75f * M_PI : me->GetOrientation();
++    float const moveDist = -1.f * std::max<float>(opponent->GetCombatReach(), 3.f);
++    float moveX;
++    float moveY;
++    //bool move = false;
++    for (uint8 i = 0; i != 6; ++i)
++    {
++        if (i)
++        {
++            ori = Position::NormalizeOrientation(ori + (i+1)*(M_PI*0.31f));
++        }
++
++        //move back
++        moveX = moveDist * std::cos(ori);
++        moveY = moveDist * std::sin(ori);
++
++        Position ppos;
++        ppos.Relocate(x+moveX, y+moveY, z);
++        if (me->IsWithinLOS(x+moveX, y+moveY, z) && !IsWithinAoERadius(ppos))
++            break;
++
++        if (i == 2)
++        {
++            moveX *= 0.2f;
++            moveY *= 0.2f;
++        }
++    }
++
++    x+= moveX;
++    y+= moveY;
++
++    me->UpdateAllowedPositionZ(x, y, z);
++    if (me->GetPositionZ() < z)
++        z += 0.75f; //prevent going underground
++
++    //if (CCed(opponent, true))
++    //    me->AttackStop();
++    //me->SetOrientation(ori);
++    Position position;
++    position.Relocate(x, y, z);
++    BotMovement(BOT_MOVE_POINT, &position);
++    //me->GetMotionMaster()->MovePoint(me->GetMapId(), x, y, z, false);
 +}
 +
 +void bot_ai::CheckAttackState()
@@ -8765,6 +9103,10 @@ index 0000000..09290a5
 +    {
 +        Position position;
 +        target->GetNearPoint(me, position.m_positionX, position.m_positionY, position.m_positionZ, me->GetCombatReach(), target->GetAbsoluteAngle(me) + M_PI);
++
++        if (IsWithinAoERadius(position))
++            return;
++
 +        BotMovement(BOT_MOVE_POINT, &position);
 +        //me->GetMotionMaster()->MovePoint(me->GetMapId(), x, y, z);
 +        const_cast<bot_ai*>(this)->waitTimer = 500;
@@ -9919,86 +10261,6 @@ index 0000000..09290a5
 +
 +    me->SetStatFloatValue(UNIT_FIELD_POWER_REGEN_INTERRUPTED_FLAT_MODIFIER, power_regen_mp5 + CalculatePct(value, modManaRegenInterrupt));
 +    me->SetStatFloatValue(UNIT_FIELD_POWER_REGEN_FLAT_MODIFIER, power_regen_mp5 + value);
-+}
-+//Bots cannot dodge/parry from behind so try to condense enemies at front
-+//opponent is always valid
-+void bot_ai::AdjustTankingPosition() const
-+{
-+    //problem: chasing unit is constantly moving. Whoever the hell did that
-+//    if (/*!IsTank() || */!me->IsInCombat() || me->isMoving() || IsCasting() ||
-+//        JumpingOrFalling() || CCed(me, true) || Rand() > 10 + 20*me->GetMap()->IsDungeon())
-+//        return;
-+    if (/*!IsTank() || */!me->IsInCombat() || IsCasting() || me->GetVehicle() ||
-+        JumpingOrFalling() || CCed(me, true) || Rand() > 10 + 20*me->GetMap()->IsDungeon() ||
-+        HasBotCommandState(BOT_COMMAND_MASK_UNMOVING))
-+        return;
-+
-+    Unit::AttackerSet const& myattackers = me->getAttackers();
-+    if (myattackers.size() < 2)
-+        return;
-+
-+    //TC_LOG_ERROR("entities.player", "AdjustTankingPosition() by %s", me->GetName().c_str());
-+
-+    uint32 bCount = 0;
-+    for (Unit::AttackerSet::const_iterator itr = myattackers.begin(); itr != myattackers.end(); ++itr)
-+    {
-+        if (/*!CCed(*itr) && */(*itr)->GetDistance(me) < 5 && !me->HasInArc(M_PI, *itr))
-+            ++bCount;
-+            //if (++bCount)
-+            //    break;
-+    }
-+
-+    if (bCount == 0)
-+        return;
-+
-+    //TC_LOG_ERROR("entities.player", "AdjustTankingPosition(): atts %u, behind %u", uint32(myattackers.size()), bCount);
-+
-+    //calculate new position
-+    float x = me->GetPositionX();
-+    float y = me->GetPositionY();
-+    float z = me->GetPositionZ();
-+    float ori = CCed(opponent, true) ? me->GetOrientation() + 0.75f * M_PI : me->GetOrientation();
-+    float const moveDist = -1.f * std::max<float>(opponent->GetCombatReach() * 0.6f, 3.f);
-+    float moveX;
-+    float moveY;
-+    //bool move = false;
-+    for (uint8 i = 0; i != 3; ++i)
-+    {
-+        if (i)
-+        {
-+            ori = Position::NormalizeOrientation(ori + (i+1)*(M_PI*0.5f));
-+        }
-+
-+        //move back
-+        moveX = moveDist * std::cos(ori);
-+        moveY = moveDist * std::sin(ori);
-+
-+        if (me->IsWithinLOS(x+moveX, y+moveY, z))
-+            break;
-+
-+        if (i == 2)
-+        {
-+            moveX *= 0.2f;
-+            moveY *= 0.2f;
-+        }
-+    }
-+
-+    x+= moveX;
-+    y+= moveY;
-+
-+    me->UpdateAllowedPositionZ(x, y, z);
-+    if (me->GetPositionZ() < z)
-+        z += 0.75f; //prevent going underground
-+
-+    //if (CCed(opponent, true))
-+    //    me->AttackStop();
-+    //me->SetOrientation(ori);
-+    Position position;
-+    position.Relocate(x, y, z);
-+    BotMovement(BOT_MOVE_POINT, &position);
-+    //me->GetMotionMaster()->MovePoint(me->GetMapId(), x, y, z, false);
-+    //TC_LOG_ERROR("entities.player", "AdjustTankingPosition(): moving %s from %.2f %.2f to %.2f %.2f",
-+    //    me->GetName().c_str(), me->GetPositionX(), me->GetPositionY(), x, y);
 +}
 +//SpellHit()... OnSpellHit()
 +void bot_ai::OnSpellHit(Unit* caster, SpellInfo const* spell)
@@ -11454,7 +11716,7 @@ index 0000000..09290a5
 +                    }
 +                    if (standard)
 +                        continue;
-+                    if (_canEquip(pItem->GetTemplate(), action - GOSSIP_ACTION_INFO_DEF, true) &&
++                    if (_canEquip(pItem, action - GOSSIP_ACTION_INFO_DEF, true) &&
 +                        /*itemList.find(pItem->GetGUID().GetCounter()) == itemList.end() &&*/
 +                        (pItem->GetItemRandomPropertyId() == 0 ? idsList.find(pItem->GetEntry()) == idsList.end() : true))
 +                    {
@@ -11484,7 +11746,7 @@ index 0000000..09290a5
 +                            }
 +                            if (standard)
 +                                continue;
-+                            if (_canEquip(pItem->GetTemplate(), action - GOSSIP_ACTION_INFO_DEF, true) &&
++                            if (_canEquip(pItem, action - GOSSIP_ACTION_INFO_DEF, true) &&
 +                                /*itemList.find(pItem->GetGUID().GetCounter()) == itemList.end() &&*/
 +                                (pItem->GetItemRandomPropertyId() == 0 ? idsList.find(pItem->GetEntry()) == idsList.end() : true))
 +                            {
@@ -11554,6 +11816,8 @@ index 0000000..09290a5
 +                        {
 +                            std::ostringstream name;
 +                            _AddItemLink(player, item, name);
++                            if (BotMgr::SendEquipListItems())
++                                BotWhisper(name.str(), player);
 +                            AddGossipItemFor(player, GOSSIP_ICON_CHAT, name.str().c_str(), GOSSIP_SENDER_EQUIP + slot, GOSSIP_ACTION_INFO_DEF + item->GetGUID().GetCounter());
 +                            ++counter;
 +                            found = true;
@@ -11575,6 +11839,8 @@ index 0000000..09290a5
 +                                {
 +                                    std::ostringstream name;
 +                                    _AddItemLink(player, item, name);
++                                    if (BotMgr::SendEquipListItems())
++                                        BotWhisper(name.str(), player);
 +                                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, name.str().c_str(), GOSSIP_SENDER_EQUIP + slot, GOSSIP_ACTION_INFO_DEF + item->GetGUID().GetCounter());
 +                                    ++counter;
 +                                    found = true;
@@ -11718,7 +11984,7 @@ index 0000000..09290a5
 +
 +                    for (uint8 k = BOT_SLOT_MAINHAND; k != BOT_INVENTORY_SIZE; ++k)
 +                    {
-+                        if (_canEquip(pItem->GetTemplate(), k))
++                        if (_canEquip(pItem, k))
 +                        {
 +                            canEquip = true;
 +                            break;
@@ -11759,7 +12025,7 @@ index 0000000..09290a5
 +
 +                            for (uint8 k = BOT_SLOT_MAINHAND; k != BOT_INVENTORY_SIZE; ++k)
 +                            {
-+                                if (_canEquip(pItem->GetTemplate(), k))
++                                if (_canEquip(pItem, k))
 +                                {
 +                                    canEquip = true;
 +                                    break;
@@ -11800,12 +12066,12 @@ index 0000000..09290a5
 +                            uint8 k = 0;
 +                            for (; k != BOT_INVENTORY_SIZE; ++k)
 +                            {
-+                                if (_canEquip(item->GetTemplate(), k))
++                                if (_canEquip(item, k))
 +                                {
 +                                    //workaround for double slots
 +                                    //if first slot is occupied and second slot is vacant use second slot
 +                                    if (k == BOT_SLOT_FINGER1 || k == BOT_SLOT_TRINKET1)
-+                                        if (_equips[k] != nullptr && _canEquip(item->GetTemplate(), k + 1))
++                                        if (_equips[k] != nullptr && _canEquip(item, k + 1))
 +                                            ++k;
 +                                    break;
 +                                }
@@ -11813,6 +12079,8 @@ index 0000000..09290a5
 +
 +                            std::ostringstream name;
 +                            _AddItemLink(player, item, name);
++                            if (BotMgr::SendEquipListItems())
++                                BotWhisper(name.str(), player);
 +                            AddGossipItemFor(player, GOSSIP_ICON_CHAT, name.str().c_str(), GOSSIP_SENDER_EQUIP_AUTOEQUIP_EQUIP + k, GOSSIP_ACTION_INFO_DEF + item->GetGUID().GetCounter());
 +                            ++counter;
 +                            found = true;
@@ -11835,12 +12103,12 @@ index 0000000..09290a5
 +                                    uint8 k = 0;
 +                                    for (; k != BOT_INVENTORY_SIZE; ++k)
 +                                    {
-+                                        if (_canEquip(item->GetTemplate(), k))
++                                        if (_canEquip(item, k))
 +                                        {
 +                                            //workaround for double slots
 +                                            //if first slot is occupied and second slot is vacant use second slot
 +                                            if (k == BOT_SLOT_FINGER1 || k == BOT_SLOT_TRINKET1)
-+                                                if (_equips[k] != nullptr && _canEquip(item->GetTemplate(), k + 1))
++                                                if (_equips[k] != nullptr && _canEquip(item, k + 1))
 +                                                    ++k;
 +                                            break;
 +                                        }
@@ -11848,6 +12116,8 @@ index 0000000..09290a5
 +
 +                                    std::ostringstream name;
 +                                    _AddItemLink(player, item, name);
++                                    if (BotMgr::SendEquipListItems())
++                                        BotWhisper(name.str(), player);
 +                                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, name.str().c_str(), GOSSIP_SENDER_EQUIP_AUTOEQUIP_EQUIP + k, GOSSIP_ACTION_INFO_DEF + item->GetGUID().GetCounter());
 +                                    ++counter;
 +                                    found = true;
@@ -13756,8 +14026,10 @@ index 0000000..09290a5
 +        _botclass == BOT_CLASS_DRUID || _botclass == BOT_CLASS_DEATH_KNIGHT);
 +}
 +
-+bool bot_ai::_canEquip(ItemTemplate const* item, uint8 slot, bool ignoreItemLevel) const
++bool bot_ai::_canEquip(Item const* newItem, uint8 slot, bool ignoreItemLevel) const
 +{
++    ItemTemplate const* newProto = newItem->GetTemplate();
++
 +    int8 id = 1;
 +    EquipmentInfo const* einfo = sObjectMgr->GetEquipmentInfo(me->GetEntry(), id);
 +
@@ -13765,13 +14037,13 @@ index 0000000..09290a5
 +    {
 +        ItemTemplate const* oldProto = oldItem->GetTemplate();
 +        //prevent reequipping same items
-+        if (item->ItemId == oldProto->ItemId && !oldItem->GetItemRandomPropertyId())
++        if (newProto->ItemId == oldProto->ItemId && !newItem->GetItemRandomPropertyId())
 +            return false;
 +        //prevent equipping worse items (only standard or not)
 +        if (!ignoreItemLevel)
 +            if (slot > BOT_SLOT_RANGED || einfo->ItemEntry[slot] != oldProto->ItemId)
 +                if (IAmFree() || !master->IsGameMaster())
-+                    if (oldProto->ItemLevel > item->ItemLevel)
++                    if (_getItemGearScore(oldItem, slot) > _getItemGearScore(newItem, slot))
 +                        return false;
 +    }
 +
@@ -13779,17 +14051,17 @@ index 0000000..09290a5
 +        return false;
 +
 +    //level requirements
-+    if (me->GetLevel() < item->RequiredLevel)
++    if (me->GetLevel() < newProto->RequiredLevel)
 +        return false;
 +
 +    //class requirements
-+    if (_botclass < BOT_CLASS_EX_START && !(item->AllowableClass & (1<<(_botclass-1))))
++    if (_botclass < BOT_CLASS_EX_START && !(newProto->AllowableClass & (1<<(_botclass-1))))
 +        return false;
 +
 +    //skip race requirements
 +
 +    //inventory related conditions
-+    if (item->Class == ITEM_CLASS_WEAPON)
++    if (newProto->Class == ITEM_CLASS_WEAPON)
 +    {
 +        switch (slot)
 +        {
@@ -13797,13 +14069,13 @@ index 0000000..09290a5
 +                switch (_botclass)
 +                {
 +                    case BOT_CLASS_BM:
-+                        if (item->SubClass != ITEM_SUBCLASS_WEAPON_POLEARM &&
-+                            item->SubClass != ITEM_SUBCLASS_WEAPON_AXE2 &&
-+                            item->SubClass != ITEM_SUBCLASS_WEAPON_SWORD2)
++                        if (newProto->SubClass != ITEM_SUBCLASS_WEAPON_POLEARM &&
++                            newProto->SubClass != ITEM_SUBCLASS_WEAPON_AXE2 &&
++                            newProto->SubClass != ITEM_SUBCLASS_WEAPON_SWORD2)
 +                            return false;
 +                        break;
 +                    case BOT_CLASS_ARCHMAGE:
-+                        if (item->SubClass != ITEM_SUBCLASS_WEAPON_STAFF)
++                        if (newProto->SubClass != ITEM_SUBCLASS_WEAPON_STAFF)
 +                            return false;
 +                        break;
 +                    default:
@@ -13811,7 +14083,7 @@ index 0000000..09290a5
 +                }
 +                break;
 +            case BOT_SLOT_OFFHAND:
-+                if (item->SubClass == ITEM_SUBCLASS_WEAPON_POLEARM || item->SubClass == ITEM_SUBCLASS_WEAPON_STAFF)
++                if (newProto->SubClass == ITEM_SUBCLASS_WEAPON_POLEARM || newProto->SubClass == ITEM_SUBCLASS_WEAPON_STAFF)
 +                    return false;
 +                switch (_botclass)
 +                {
@@ -13843,7 +14115,7 @@ index 0000000..09290a5
 +                return false;
 +        }
 +
-+        switch (item->InventoryType)
++        switch (newProto->InventoryType)
 +        {
 +            case INVTYPE_WEAPONMAINHAND:
 +                if (slot != BOT_SLOT_MAINHAND)
@@ -13906,7 +14178,7 @@ index 0000000..09290a5
 +        switch (_botclass)
 +        {
 +            case BOT_CLASS_WARRIOR:
-+                switch (item->SubClass)
++                switch (newProto->SubClass)
 +                {
 +                    case ITEM_SUBCLASS_WEAPON_AXE:
 +                    case ITEM_SUBCLASS_WEAPON_AXE2:
@@ -13930,7 +14202,7 @@ index 0000000..09290a5
 +                break;
 +            case BOT_CLASS_PALADIN:
 +            case BOT_CLASS_DEATH_KNIGHT:
-+                switch (item->SubClass)
++                switch (newProto->SubClass)
 +                {
 +                    case ITEM_SUBCLASS_WEAPON_AXE:
 +                    case ITEM_SUBCLASS_WEAPON_AXE2:
@@ -13945,7 +14217,7 @@ index 0000000..09290a5
 +                }
 +                break;
 +            case BOT_CLASS_HUNTER:
-+                switch (item->SubClass)
++                switch (newProto->SubClass)
 +                {
 +                    case ITEM_SUBCLASS_WEAPON_AXE:
 +                    case ITEM_SUBCLASS_WEAPON_AXE2:
@@ -13967,7 +14239,7 @@ index 0000000..09290a5
 +                }
 +                break;
 +            case BOT_CLASS_ROGUE:
-+                switch (item->SubClass)
++                switch (newProto->SubClass)
 +                {
 +                    case ITEM_SUBCLASS_WEAPON_AXE:
 +                    case ITEM_SUBCLASS_WEAPON_MACE:
@@ -13984,7 +14256,7 @@ index 0000000..09290a5
 +                }
 +                break;
 +            case BOT_CLASS_PRIEST:
-+                switch (item->SubClass)
++                switch (newProto->SubClass)
 +                {
 +                    case ITEM_SUBCLASS_WEAPON_MACE:
 +                    case ITEM_SUBCLASS_WEAPON_STAFF:
@@ -13997,7 +14269,7 @@ index 0000000..09290a5
 +                break;
 +            case BOT_CLASS_MAGE:
 +            case BOT_CLASS_WARLOCK:
-+                switch (item->SubClass)
++                switch (newProto->SubClass)
 +                {
 +                    case ITEM_SUBCLASS_WEAPON_SWORD:
 +                    case ITEM_SUBCLASS_WEAPON_STAFF:
@@ -14009,7 +14281,7 @@ index 0000000..09290a5
 +                }
 +                break;
 +            case BOT_CLASS_DRUID:
-+                switch (item->SubClass)
++                switch (newProto->SubClass)
 +                {
 +                    case ITEM_SUBCLASS_WEAPON_MACE:
 +                    case ITEM_SUBCLASS_WEAPON_MACE2:
@@ -14023,7 +14295,7 @@ index 0000000..09290a5
 +                }
 +                break;
 +            case BOT_CLASS_SHAMAN:
-+                switch (item->SubClass)
++                switch (newProto->SubClass)
 +                {
 +                    case ITEM_SUBCLASS_WEAPON_AXE:
 +                    case ITEM_SUBCLASS_WEAPON_AXE2:
@@ -14038,7 +14310,7 @@ index 0000000..09290a5
 +                }
 +                break;
 +            case BOT_CLASS_BM:
-+                switch (item->SubClass)
++                switch (newProto->SubClass)
 +                {
 +                    case ITEM_SUBCLASS_WEAPON_AXE2:
 +                    case ITEM_SUBCLASS_WEAPON_SWORD2:
@@ -14049,7 +14321,7 @@ index 0000000..09290a5
 +                }
 +                break;
 +            case BOT_CLASS_SPHYNX:
-+                switch (item->SubClass)
++                switch (newProto->SubClass)
 +                {
 +                    //case ITEM_SUBCLASS_WEAPON_MACE:
 +                    //case ITEM_SUBCLASS_WEAPON_MACE2:
@@ -14063,7 +14335,7 @@ index 0000000..09290a5
 +                }
 +                break;
 +            case BOT_CLASS_ARCHMAGE:
-+                switch (item->SubClass)
++                switch (newProto->SubClass)
 +                {
 +                    case ITEM_SUBCLASS_WEAPON_STAFF:
 +                        break;
@@ -14072,7 +14344,7 @@ index 0000000..09290a5
 +                }
 +                break;
 +            case BOT_CLASS_DREADLORD:
-+                switch (item->SubClass)
++                switch (newProto->SubClass)
 +                {
 +                    case ITEM_SUBCLASS_WEAPON_AXE:
 +                    case ITEM_SUBCLASS_WEAPON_AXE2:
@@ -14090,7 +14362,7 @@ index 0000000..09290a5
 +                }
 +                break;
 +            case BOT_CLASS_SPELLBREAKER:
-+                switch (item->SubClass)
++                switch (newProto->SubClass)
 +                {
 +                    case ITEM_SUBCLASS_WEAPON_AXE:
 +                    case ITEM_SUBCLASS_WEAPON_MACE:
@@ -14103,7 +14375,7 @@ index 0000000..09290a5
 +                }
 +                break;
 +            case BOT_CLASS_DARK_RANGER:
-+                switch (item->SubClass)
++                switch (newProto->SubClass)
 +                {
 +                    case ITEM_SUBCLASS_WEAPON_SWORD:
 +                    case ITEM_SUBCLASS_WEAPON_DAGGER:
@@ -14119,9 +14391,9 @@ index 0000000..09290a5
 +
 +        return true;
 +    }
-+    else if (item->Class == ITEM_CLASS_ARMOR/* || item->Class == ITEM_CLASS_QUEST*/)
++    else if (newProto->Class == ITEM_CLASS_ARMOR/* || newProto->Class == ITEM_CLASS_QUEST*/)
 +    {
-+        switch (item->InventoryType)
++        switch (newProto->InventoryType)
 +        {
 +            case INVTYPE_HEAD:
 +                if (slot != BOT_SLOT_HEAD)
@@ -14231,7 +14503,7 @@ index 0000000..09290a5
 +                return false;
 +        }
 +
-+        switch (item->SubClass)
++        switch (newProto->SubClass)
 +        {
 +            case ITEM_SUBCLASS_ARMOR_SHIELD:
 +                if (slot != BOT_SLOT_OFFHAND)
@@ -14259,7 +14531,7 @@ index 0000000..09290a5
 +                    case BOT_CLASS_WARRIOR:
 +                    case BOT_CLASS_PALADIN:
 +                    case BOT_CLASS_DEATH_KNIGHT:
-+                        if (me->GetLevel() >= 40 || item->Quality == ITEM_QUALITY_HEIRLOOM)
++                        if (me->GetLevel() >= 40 || newProto->Quality == ITEM_QUALITY_HEIRLOOM)
 +                            break;
 +                        return false;
 +                    default:
@@ -14279,7 +14551,7 @@ index 0000000..09290a5
 +                        break;
 +                    case BOT_CLASS_SHAMAN:
 +                    case BOT_CLASS_HUNTER:
-+                        if (me->GetLevel() >= 40 || item->Quality == ITEM_QUALITY_HEIRLOOM)
++                        if (me->GetLevel() >= 40 || newProto->Quality == ITEM_QUALITY_HEIRLOOM)
 +                            break;
 +                        return false;
 +                    default:
@@ -14311,7 +14583,7 @@ index 0000000..09290a5
 +                        return false;
 +                    case BOT_CLASS_DREADLORD:
 +                    case BOT_CLASS_SPELLBREAKER:
-+                        if (item->InventoryType != INVTYPE_CLOAK)
++                        if (newProto->InventoryType != INVTYPE_CLOAK)
 +                            return false;
 +                        break;
 +                    default:
@@ -14654,7 +14926,7 @@ index 0000000..09290a5
 +    for (uint8 i = 0; i != MAX_ITEM_PROTO_STATS; ++i)
 +    {
 +        uint32 statType = 0;
-+        int32  val = 0;
++        int32  val      = 0;
 +        if (ssd && ssv)
 +        {
 +            if (ssd->StatID[i] < 0)
@@ -15440,6 +15712,326 @@ index 0000000..09290a5
 +        return 1.0f;
 +
 +    return classRating->Data / Rating->Data;
++}
++
++float bot_ai::_getStatScore(uint8 stat) const
++{
++    static const float fone = 1.0f;
++    static const float fzero = 0.0f;
++
++    float tankMod = IsTank() ? fone : fzero;
++    float healMod = HasRole(BOT_ROLE_HEAL) ? fone : fzero;
++    float castMod = IsCastingClass(_botclass) ? fone : fzero;
++    float spiritMod = (_botclass == BOT_CLASS_PRIEST || _botclass == BOT_CLASS_MAGE || _botclass == BOT_CLASS_WARLOCK || (_botclass == BOT_CLASS_DRUID && _spec != BOT_SPEC_DRUID_FERAL)) ? fone : fzero;
++    float dpsMod = HasRole(BOT_ROLE_DPS) ? fone : fzero;
++    float meleeMod = !HasRole(BOT_ROLE_RANGED) ? fone : fzero;
++    float manaMod = (_botclass == BOT_CLASS_DRUID || me->GetPowerType() == POWER_MANA) ? fone : fzero;
++
++    switch (stat)
++    {
++        case BOT_STAT_MOD_MANA:
++            return 0.1f * manaMod;
++        case BOT_STAT_MOD_HEALTH:
++            return 0.1f;
++        case BOT_STAT_MOD_AGILITY:
++            return _botclass == BOT_CLASS_ROGUE ? 1.2f * dpsMod * meleeMod : (_botclass == BOT_CLASS_HUNTER ? 1.0f : 0.5f) * dpsMod;
++        case BOT_STAT_MOD_STRENGTH:
++            return (IsMeleeClass(_botclass) ? 1.0f : 0.5f) * dpsMod * meleeMod;
++        case BOT_STAT_MOD_INTELLECT:
++            return 1.0f * castMod;
++        case BOT_STAT_MOD_SPIRIT:
++            return 1.0f * spiritMod;
++        case BOT_STAT_MOD_STAMINA:
++            return IsTank() ? 2.0f : 1.0f;
++        case BOT_STAT_MOD_DEFENSE_SKILL_RATING:
++            return 2.0f * tankMod;
++        case BOT_STAT_MOD_DODGE_RATING:
++        case BOT_STAT_MOD_PARRY_RATING:
++            return 2.0f * tankMod;
++        case BOT_STAT_MOD_BLOCK_RATING:
++            return CanBlock() ? 2.0f : 0.0f * tankMod;
++        case BOT_STAT_MOD_BLOCK_VALUE:
++            return CanBlock() ? 0.67f : 0.0f * tankMod;
++        case BOT_STAT_MOD_HIT_TAKEN_RATING:
++        case BOT_STAT_MOD_CRIT_TAKEN_RATING:
++            return 1.0f * tankMod;
++        case BOT_STAT_MOD_HIT_TAKEN_MELEE_RATING:
++        case BOT_STAT_MOD_HIT_TAKEN_RANGED_RATING:
++        case BOT_STAT_MOD_HIT_TAKEN_SPELL_RATING:
++        case BOT_STAT_MOD_CRIT_TAKEN_MELEE_RATING:
++        case BOT_STAT_MOD_CRIT_TAKEN_RANGED_RATING:
++        case BOT_STAT_MOD_CRIT_TAKEN_SPELL_RATING:
++            return 0.4f * tankMod;
++        case BOT_STAT_MOD_ARMOR:
++            return 0.05f * tankMod;
++        case BOT_STAT_MOD_HIT_MELEE_RATING:
++        case BOT_STAT_MOD_HIT_RANGED_RATING:
++        case BOT_STAT_MOD_HIT_SPELL_RATING:
++            return 1.0f * dpsMod;
++        case BOT_STAT_MOD_CRIT_MELEE_RATING:
++        case BOT_STAT_MOD_CRIT_RANGED_RATING:
++        case BOT_STAT_MOD_CRIT_SPELL_RATING:
++        case BOT_STAT_MOD_HASTE_MELEE_RATING:
++        case BOT_STAT_MOD_HASTE_RANGED_RATING:
++        case BOT_STAT_MOD_HASTE_SPELL_RATING:
++        case BOT_STAT_MOD_HIT_RATING:
++        case BOT_STAT_MOD_CRIT_RATING:
++        case BOT_STAT_MOD_HASTE_RATING:
++            return HasRole(BOT_ROLE_DPS|BOT_ROLE_HEAL) ? 1.0f : 0.0f;
++        case BOT_STAT_MOD_EXPERTISE_RATING:
++            return 2.0f * dpsMod * meleeMod;
++        case BOT_STAT_MOD_ATTACK_POWER:
++            return ((IsMeleeClass(_botclass) || _botclass == BOT_CLASS_HUNTER) ? 0.43f : 0.1f) * dpsMod;
++        case BOT_STAT_MOD_RANGED_ATTACK_POWER:
++            switch (_botclass)
++            {
++                case BOT_CLASS_HUNTER: case BOT_CLASS_DARK_RANGER:                  return 0.43f * dpsMod;
++                case BOT_CLASS_PRIEST: case BOT_CLASS_MAGE: case BOT_CLASS_WARLOCK: return 0.15f * dpsMod;
++                default:                                                            return 0.0f;
++            }
++        case BOT_STAT_MOD_FERAL_ATTACK_POWER:
++            return _spec == BOT_SPEC_DRUID_FERAL ? 0.43f : 0.0f;
++        case BOT_STAT_MOD_SPELL_HEALING_DONE:
++            return 1.25f * healMod;
++        case BOT_STAT_MOD_SPELL_DAMAGE_DONE:
++            return 1.25f * dpsMod * castMod;
++        case BOT_STAT_MOD_MANA_REGENERATION:
++            return _botclass == BOT_CLASS_SPHYNX ? 0.0f : 1.2f * manaMod;
++        case BOT_STAT_MOD_ARMOR_PENETRATION_RATING:
++            return 2.0f * dpsMod * meleeMod;
++        case BOT_STAT_MOD_SPELL_POWER:
++            return 1.25f * castMod;
++        case BOT_STAT_MOD_HEALTH_REGEN:
++            return 0.33f * tankMod;
++        case BOT_STAT_MOD_SPELL_PENETRATION:
++            return 1.2f * castMod * dpsMod;
++        case BOT_STAT_MOD_DAMAGE_MIN:
++        case BOT_STAT_MOD_DAMAGE_MAX:
++            return ((IsMeleeClass(_botclass) || _botclass == BOT_CLASS_HUNTER) ? 0.33f : 0.0f) * dpsMod;
++        case BOT_STAT_MOD_RESIST_HOLY:
++        case BOT_STAT_MOD_RESIST_FIRE:
++        case BOT_STAT_MOD_RESIST_NATURE:
++        case BOT_STAT_MOD_RESIST_FROST:
++        case BOT_STAT_MOD_RESIST_SHADOW:
++        case BOT_STAT_MOD_RESIST_ARCANE:
++            return IsTank() ? 1.25f : 0.25f;
++        default:
++            return 0.0f;
++    }
++}
++
++float bot_ai::_getItemGearScore(Item const* item, uint8 forslot) const
++{
++    if (!item)
++        return 0.0f;
++
++    ItemTemplate const* proto = sObjectMgr->GetItemTemplate(item->GetEntry());
++    if (!proto)
++        return 0.0f;
++
++    //TC_LOG_ERROR("scripts", "_getItemGearScore for %u - %s", item->GetEntry(), proto->Name1.c_str());
++
++    ItemStatBonus istats = {};
++    //for (uint8 i = 0; i != MAX_BOT_ITEM_MOD; ++i)
++    //    TC_LOG_ERROR("scripts", "_getItemGearScore at %u %i", uint32(i), istats[i]);
++
++    ScalingStatDistributionEntry const* ssd = proto->ScalingStatDistribution ? sScalingStatDistributionStore.LookupEntry(proto->ScalingStatDistribution) : NULL;
++
++    uint32 ssd_level = me->GetLevel();
++    if (ssd && ssd_level > ssd->Maxlevel)
++        ssd_level = ssd->Maxlevel;
++
++    ScalingStatValuesEntry const* ssv = proto->ScalingStatValue ? sScalingStatValuesStore.LookupEntry(ssd_level) : NULL;
++
++    for (uint8 i = 0; i != MAX_ITEM_PROTO_STATS; ++i)
++    {
++        uint32 statType = 0;
++        int32  val      = 0;
++        if (ssd && ssv)
++        {
++            if (ssd->StatID[i] < 0)
++                continue;
++            statType = ssd->StatID[i];
++            val = (ssv->getssdMultiplier(proto->ScalingStatValue) * ssd->Bonus[i]) / 10000;
++        }
++        else
++        {
++            if (i >= proto->StatsCount)
++                continue;
++            statType = proto->ItemStat[i].ItemStatType;
++            val = proto->ItemStat[i].ItemStatValue;
++        }
++
++        if (val == 0)
++            continue;
++
++        istats[statType] += val;
++    }
++
++    istats[BOT_STAT_MOD_RESIST_HOLY] += proto->HolyRes;
++    istats[BOT_STAT_MOD_RESIST_FIRE] += proto->FireRes;
++    istats[BOT_STAT_MOD_RESIST_NATURE] += proto->NatureRes;
++    istats[BOT_STAT_MOD_RESIST_FROST] += proto->FrostRes;
++    istats[BOT_STAT_MOD_RESIST_SHADOW] += proto->ShadowRes;
++    istats[BOT_STAT_MOD_RESIST_ARCANE] += proto->ArcaneRes;
++
++    istats[BOT_STAT_MOD_ARMOR] += proto->Armor;
++    istats[BOT_STAT_MOD_BLOCK_VALUE] += proto->Block;
++
++
++    int8 id = 1;
++    EquipmentInfo const* einfo = sObjectMgr->GetEquipmentInfo(me->GetEntry(), id);
++    if (item->GetEntry() != einfo->ItemEntry[forslot])
++    {
++        if (ssv)
++        {
++            float average = ssv->getDPSMod(proto->ScalingStatValue) * proto->Delay / 1000.0f;
++            istats[BOT_STAT_MOD_DAMAGE_MIN] += 0.7f * average;
++            istats[BOT_STAT_MOD_DAMAGE_MIN] += 1.3f * average;
++        }
++        else
++        {
++            istats[BOT_STAT_MOD_DAMAGE_MIN] += proto->Damage[0].DamageMin + proto->Damage[1].DamageMin;
++            istats[BOT_STAT_MOD_DAMAGE_MAX] += proto->Damage[0].DamageMax + proto->Damage[1].DamageMax;
++        }
++
++        if (_botclass == BOT_CLASS_DRUID)
++        {
++            int32 dpsMod = 0;
++            int32 feral_bonus = 0;
++
++            if (ssv)
++            {
++                dpsMod = ssv->getDPSMod(proto->ScalingStatValue);
++                feral_bonus += ssv->getFeralBonus(proto->ScalingStatValue);
++            }
++
++            feral_bonus += proto->getFeralBonus(dpsMod);
++            if (feral_bonus)
++                istats[BOT_STAT_MOD_FERAL_ATTACK_POWER] += feral_bonus;
++        }
++    }
++
++    for (uint8 i = 0; i != MAX_ENCHANTMENT_SLOT; ++i)
++    {
++        EnchantmentSlot eslot = EnchantmentSlot(i);
++        uint32 enchant_id = item->GetEnchantmentId(eslot);
++        if (!enchant_id)
++            continue;
++
++        SpellItemEnchantmentEntry const* pEnchant = sSpellItemEnchantmentStore.LookupEntry(enchant_id);
++        if (!pEnchant)
++            continue;
++
++        uint32 enchant_display_type;
++        uint32 enchant_amount;
++        uint32 enchant_spell_id;
++
++        for (uint8 s = 0; s != MAX_ITEM_ENCHANTMENT_EFFECTS; ++s)
++        {
++            enchant_display_type = pEnchant->Effect[s];
++            enchant_amount = pEnchant->EffectPointsMin[s];
++            enchant_spell_id = pEnchant->EffectArg[s];
++
++            switch (enchant_display_type)
++            {
++                case ITEM_ENCHANTMENT_TYPE_DAMAGE:
++                    istats[BOT_STAT_MOD_DAMAGE_MIN] += enchant_amount;
++                    istats[BOT_STAT_MOD_DAMAGE_MAX] += enchant_amount;
++                    break;
++                case ITEM_ENCHANTMENT_TYPE_RESISTANCE:
++                    if (!enchant_amount)
++                    {
++                        ItemRandomSuffixEntry const* item_rand = sItemRandomSuffixStore.LookupEntry(abs(item->GetItemRandomPropertyId()));
++                        if (item_rand)
++                        {
++                            for (uint8 k = 0; k < MAX_ITEM_ENCHANTMENT_EFFECTS; ++k)
++                            {
++                                if (item_rand->Enchantment[k] == enchant_id)
++                                {
++                                    enchant_amount = uint32((item_rand->AllocationPct[k] * item->GetItemSuffixFactor()) / 10000);
++                                    break;
++                                }
++                            }
++                        }
++                    }
++                    istats[BOT_STAT_MOD_RESISTANCE_START + enchant_spell_id] += enchant_amount;
++                    break;
++                case ITEM_ENCHANTMENT_TYPE_STAT:
++                {
++                    if (!enchant_amount)
++                    {
++                        ItemRandomSuffixEntry const* item_rand_suffix = sItemRandomSuffixStore.LookupEntry(abs(item->GetItemRandomPropertyId()));
++                        if (item_rand_suffix)
++                        {
++                            for (uint8 k = 0; k != MAX_ITEM_ENCHANTMENT_EFFECTS; ++k)
++                            {
++                                if (item_rand_suffix->Enchantment[k] == enchant_id)
++                                {
++                                    enchant_amount = uint32((item_rand_suffix->AllocationPct[k] * item->GetItemSuffixFactor()) / 10000);
++                                    break;
++                                }
++                            }
++                        }
++                    }
++
++                    switch (enchant_spell_id)
++                    {
++                        case ITEM_MOD_MANA:
++                        case ITEM_MOD_HEALTH:
++                        case ITEM_MOD_AGILITY:
++                        case ITEM_MOD_STRENGTH:
++                        case ITEM_MOD_INTELLECT:
++                        case ITEM_MOD_SPIRIT:
++                        case ITEM_MOD_STAMINA:
++                        case ITEM_MOD_DEFENSE_SKILL_RATING:
++                        case ITEM_MOD_DODGE_RATING:
++                        case ITEM_MOD_PARRY_RATING:
++                        case ITEM_MOD_BLOCK_RATING:
++                        case ITEM_MOD_HIT_MELEE_RATING:
++                        case ITEM_MOD_HIT_RANGED_RATING:
++                        case ITEM_MOD_HIT_SPELL_RATING:
++                        case ITEM_MOD_CRIT_MELEE_RATING:
++                        case ITEM_MOD_CRIT_RANGED_RATING:
++                        case ITEM_MOD_CRIT_SPELL_RATING:
++                        case ITEM_MOD_HASTE_MELEE_RATING:
++                        case ITEM_MOD_HASTE_RANGED_RATING:
++                        case ITEM_MOD_HASTE_SPELL_RATING:
++                        case ITEM_MOD_HIT_RATING:
++                        case ITEM_MOD_CRIT_RATING:
++                        case ITEM_MOD_HASTE_RATING:
++                        case ITEM_MOD_RESILIENCE_RATING:
++                        case ITEM_MOD_EXPERTISE_RATING:
++                        case ITEM_MOD_ATTACK_POWER:
++                        case ITEM_MOD_RANGED_ATTACK_POWER:
++                        case ITEM_MOD_MANA_REGENERATION:
++                        case ITEM_MOD_ARMOR_PENETRATION_RATING:
++                        case ITEM_MOD_SPELL_POWER:
++                        case ITEM_MOD_HEALTH_REGEN:
++                        case ITEM_MOD_SPELL_PENETRATION:
++                        case ITEM_MOD_BLOCK_VALUE:
++                            istats[enchant_spell_id] += enchant_amount;
++                            break;
++                        default:
++                            break;
++                    }
++                    break;
++                }
++            }
++        }
++    }
++
++    //for (uint8 i = 0; i != MAX_BOT_ITEM_MOD; ++i)
++    //    TC_LOG_ERROR("scripts", "_getItemGearScore total %u %i", uint32(i), istats[i]);
++
++    //stats are fetched, not calculate
++    float itemScore = 0.0f;
++
++    for (uint8 i = 0; i != MAX_BOT_ITEM_MOD; ++i)
++        itemScore += istats[i] * _getStatScore(i);
++
++    //TC_LOG_ERROR("scripts", "_getItemGearScore total score %.3f", itemScore);
++    return itemScore;
 +}
 +
 +void bot_ai::_saveStats()
@@ -16998,26 +17590,28 @@ index 0000000..09290a5
 +            {
 +                if (entry->ProcsPerMinute)
 +                {
-+                    chance = me->GetPPMProcChance(proto->Delay, entry->ProcsPerMinute, spellInfo);
++                    chance = entry->ProcsPerMinute;
 +                    //handle SPELLMOD_PROC_PER_MINUTE spellmods
-+                    if (_botclass == BOT_CLASS_ROGUE)
-+                    {
-+                        //Improved Poisons
-+                        if (_spec == BOT_SPEC_ROGUE_ASSASINATION && me->GetLevel() >= 25 && (spellInfo->SpellFamilyFlags[0] & 0x2000))
-+                            chance *= 1.5f;
-+                    }
++                    //Envenom
++                    if (_spec == BOT_SPEC_ROGUE_ASSASINATION && me->HasAuraTypeWithFamilyFlags(SPELL_AURA_ADD_FLAT_MODIFIER, SPELLFAMILY_ROGUE, 0x800000))
++                        chance *= 1.75f;
++                    //Improved Poisons
++                    if (_spec == BOT_SPEC_ROGUE_ASSASINATION && me->GetLevel() >= 25 && (spellInfo->SpellFamilyFlags[0] & 0x2000))
++                        chance *= 1.5f;
++
++                    chance = me->GetPPMProcChance(proto->Delay, chance, spellInfo);
 +                }
 +                else if (entry->Chance)
 +                    chance = (float)entry->Chance;
 +            }
 +
 +            // Apply SPELLMOD_CHANCE_OF_SUCCESS spell mods
-+            if (_botclass == BOT_CLASS_ROGUE)
-+            {
-+                //Improved Poisons
-+                if (_spec == BOT_SPEC_ROGUE_ASSASINATION && me->GetLevel() >= 25 && (spellInfo->SpellFamilyFlags[0] & 0x10000))
-+                    chance += 20.f;
-+            }
++            //Envenom
++            if (_spec == BOT_SPEC_ROGUE_ASSASINATION && me->HasAuraTypeWithFamilyFlags(SPELL_AURA_ADD_FLAT_MODIFIER, SPELLFAMILY_ROGUE, 0x800000))
++                chance += 15.f;
++            //Improved Poisons
++            if (_spec == BOT_SPEC_ROGUE_ASSASINATION && me->GetLevel() >= 25 && (spellInfo->SpellFamilyFlags[0] & 0x10000))
++                chance += 20.f;
 +
 +            // Shiv has 100% chance to apply the poison
 +            if (me->FindCurrentSpellBySpellId(5938) && e_slot == TEMP_ENCHANTMENT_SLOT)
@@ -18222,6 +18816,8 @@ index 0000000..09290a5
 +            if (!interrupt && (info->HasEffect(SPELL_EFFECT_RESURRECT) || info->HasEffect(SPELL_EFFECT_RESURRECT_NEW)) &&
 +                (target->IsAlive() || (target->GetTypeId() == TYPEID_PLAYER && target->ToPlayer()->IsResurrectRequested())))
 +                interrupt = true;
++            if (!interrupt && checkAurasTimer <= diff && me->GetMap()->IsDungeon() && !CCed(me, true) && IsWithinAoERadius(*me))
++                interrupt = true;
 +
 +            if (interrupt)
 +            {
@@ -18285,6 +18881,12 @@ index 0000000..09290a5
 +        //    me->GetVehicleBase()->SetSpeed(MOVE_FLIGHT, master->GetVehicleBase()->GetSpeedRate(MOVE_FLIGHT) * 1.37f);
 +        //    me->GetVehicleBase()->SetSpeed(MOVE_RUN, master->GetVehicleBase()->GetSpeedRate(MOVE_FLIGHT) * 1.37f);
 +        //}
++        //Model size / Combat reach
++        if (me->GetDisplayId() == me->GetNativeDisplayId())
++        {
++            me->SetFloatValue(UNIT_FIELD_BOUNDINGRADIUS, DEFAULT_PLAYER_BOUNDING_RADIUS * me->GetObjectScale());
++            me->SetFloatValue(UNIT_FIELD_COMBATREACH,  DEFAULT_PLAYER_COMBAT_REACH * me->GetObjectScale());
++        }
 +        //end DEBUG
 +
 +        //Check if moving through air
@@ -18468,19 +19070,22 @@ index 0000000..09290a5
 +        {
 +            //TC_LOG_ERROR("scripts", "GetInPos prepare by %s", me->GetName().c_str());
 +            if (!IAmFree() && master->GetBotMgr()->GetBotAttackRangeMode() == BOT_ATTACK_RANGE_EXACT &&
-+                master->GetBotMgr()->GetBotExactAttackRange() == 0 && !GetVehicleAttackDistanceOverride())
++                master->GetBotMgr()->GetBotExactAttackRange() == 0 && !GetVehicleAttackDistanceOverride() &&
++                !(!IAmFree() && !GetAoeSpots().empty()))
 +            {
 +                GetInPosition(true, victim);
 +            }
-+            else if (!HasRole(BOT_ROLE_RANGED) && !HasVehicleRoleOverride(BOT_ROLE_RANGED))
++            else if (!HasRole(BOT_ROLE_RANGED) && !HasVehicleRoleOverride(BOT_ROLE_RANGED) &&
++                !(!IAmFree() && !GetAoeSpots().empty()))
 +            {
 +                if (me->GetDistance(victim) > 1.5f)
 +                    GetInPosition(true, victim);
 +            }
 +            else
 +            {
-+                CalculateAttackPos(victim, attackpos);
-+                if (mover->GetExactDist2d(&attackpos) > 4.f || !mover->IsWithinLOSInMap(victim))
++                bool force = false;
++                CalculateAttackPos(victim, attackpos, force);
++                if (force || mover->GetExactDist2d(&attackpos) > 4.f)
 +                    GetInPosition(true, victim, &attackpos);
 +            }
 +        }
@@ -20453,10 +21058,10 @@ index 0000000..09290a5
 +}
 diff --git a/src/server/game/AI/NpcBots/bot_ai.h b/src/server/game/AI/NpcBots/bot_ai.h
 new file mode 100644
-index 0000000..5dec364
+index 0000000..ef0067c
 --- /dev/null
 +++ b/src/server/game/AI/NpcBots/bot_ai.h
-@@ -0,0 +1,614 @@
+@@ -0,0 +1,625 @@
 +#ifndef _BOT_AI_H
 +#define _BOT_AI_H
 +
@@ -20673,6 +21278,10 @@ index 0000000..5dec364
 +        static bool IsHumanoidClass(uint8 m_class);
 +        static bool IsHeroExClass(uint8 m_class);
 +
++        AoeSpotsVec const& GetAoeSpots() const;
++        static void CalculateAoeSpots(Unit const* unit, AoeSpotsVec& spots);
++        void CalculateAoeSafeSpots(Unit* target, float maxdist, AoeSafeSpotsVec& safespots) const;
++
 +        //Pet stuff
 +        static uint32 GetPetOriginalEntry(uint32 entry);
 +        static bool IsPetMelee(uint32 entry);
@@ -20732,7 +21341,6 @@ index 0000000..5dec364
 +        bool CheckAttackTarget();
 +        void MoveBehind(Unit const* target) const;
 +
-+        void AdjustTankingPosition() const;
 +        void OnStartAttack(Unit const* u);
 +        bool StartAttack(Unit const* u, bool force = false);
 +
@@ -20763,9 +21371,14 @@ index 0000000..5dec364
 +        bool Jumping() const { return me->HasUnitState(UNIT_STATE_JUMPING); }
 +
 +        float CalcSpellMaxRange(uint32 spellId, bool enemy = true) const;
++
++        static bool IsPeriodicDynObjAOEDamage(SpellInfo const* spellInfo);
++        bool IsWithinAoERadius(Position const& pos) const;
++
 +        float InitAttackRange(float origRange, bool ranged) const;
-+        void CalculateAttackPos(Unit* target, Position &pos) const;
++        void CalculateAttackPos(Unit* target, Position &pos, bool& force) const;
 +        void GetInPosition(bool force, Unit* newtarget, Position* pos = nullptr);
++        void AdjustTankingPosition() const;
 +        virtual float GetSpellAttackRange(bool longRange) const { return longRange ? 25.f : 15.f; }
 +        virtual void CheckAttackState();
 +        void OnSpellHit(Unit* caster, SpellInfo const* spell);
@@ -20931,7 +21544,7 @@ index 0000000..5dec364
 +        bool _canUseOffHand() const;
 +        bool _canUseRanged() const;
 +        bool _canUseRelic() const;
-+        bool _canEquip(ItemTemplate const* item, uint8 slot, bool ignoreItemLevel = false) const;
++        bool _canEquip(Item const* newItem, uint8 slot, bool ignoreItemLevel = false) const;
 +        bool _unequip(uint8 slot, ObjectGuid::LowType receiver);
 +        bool _equip(uint8 slot, Item* newItem, ObjectGuid::LowType receiver);
 +        bool _resetEquipment(uint8 slot, ObjectGuid::LowType receiver);
@@ -20964,6 +21577,9 @@ index 0000000..5dec364
 +        float _getBotStat(uint8 slot, uint8 stat) const;
 +        float _getTotalBotStat(uint8 stat) const;
 +        float _getRatingMultiplier(CombatRating cr) const;
++
++        float _getStatScore(uint8 stat) const;
++        float _getItemGearScore(Item const* item, uint8 forslot) const;
 +
 +        void _saveStats();
 +
@@ -37646,10 +38262,10 @@ index 0000000..edc5160
 +}
 diff --git a/src/server/game/AI/NpcBots/bot_rogue_ai.cpp b/src/server/game/AI/NpcBots/bot_rogue_ai.cpp
 new file mode 100644
-index 0000000..03960d2
+index 0000000..921e4ec
 --- /dev/null
 +++ b/src/server/game/AI/NpcBots/bot_rogue_ai.cpp
-@@ -0,0 +1,2017 @@
+@@ -0,0 +1,2030 @@
 +#include "bot_ai.h"
 +#include "botmgr.h"
 +#include "Group.h"
@@ -37677,6 +38293,7 @@ index 0000000..03960d2
 +    BACKSTAB_1                          = 53,
 +    SINISTER_STRIKE_1                   = 1752,
 +    EVISCERATE_1                        = 2098,
++    ENVENOM_1                           = 32645,
 +    RUPTURE_1                           = 1943,
 +    MUTILATE_1                          = 1329,
 +    HEMORRHAGE_1                        = 16511,
@@ -37717,7 +38334,7 @@ index 0000000..03960d2
 +    //Poisons
 +    CRIPPLING_POISON_1                  = 3408,
 +    INSTANT_POISON_1                    = 8679,
-+    DEADLY_POISON_1                     = 2823, //manual use only
++    DEADLY_POISON_1                     = 2823,
 +    WOUND_POISON_1                      = 13219,
 +    MIND_NUMBING_POISON_1               = 5761, //manual use only
 +    ANESTHETIC_POISON_1                 = 26785,
@@ -37814,7 +38431,7 @@ index 0000000..03960d2
 +};
 +
 +static const uint32 Rogue_spells_damage_arr[] =
-+{ AMBUSH_1, BACKSTAB_1, DEADLY_THROW_1, EVISCERATE_1, FAN_OF_KNIVES_1, GARROTE_1, GHOSTLY_STRIKE_1, GOUGE_1,
++{ AMBUSH_1, BACKSTAB_1, DEADLY_THROW_1, EVISCERATE_1, ENVENOM_1, FAN_OF_KNIVES_1, GARROTE_1, GHOSTLY_STRIKE_1, GOUGE_1,
 +HEMORRHAGE_1, KILLING_SPREE_1, MUTILATE_1, RIPOSTE_1, RUPTURE_1, SINISTER_STRIKE_1 };
 +
 +static const uint32 Rogue_spells_cc_arr[] =
@@ -37878,7 +38495,6 @@ index 0000000..03960d2
 +            if (!bot_ai::StartAttack(u, force))
 +                return;
 +            GetInPosition(force, u);
-+            targetPoisoned = false;
 +        }
 +
 +        void JustEnteredCombat(Unit* u) override { bot_ai::JustEnteredCombat(u); }
@@ -37901,6 +38517,12 @@ index 0000000..03960d2
 +
 +        void UpdateAI(uint32 diff) override
 +        {
++            if (combopointsSpent)
++            {
++                combopointsSpent = false;
++                comboPoints = 0;
++            }
++
 +            getenergy();
 +
 +            if (!GlobalUpdate(diff))
@@ -38190,8 +38812,12 @@ index 0000000..03960d2
 +
 +            DiminishingLevels const stunDivider = opponent->GetDiminishing(DIMINISHING_OPENING_STUN);
 +
++            bool hasHunger = me->GetAuraEffect(SPELL_AURA_MOD_DAMAGE_PERCENT_DONE, SPELLFAMILY_ROGUE, 0x0, 0x1000000, 0x0);
++
 +            //Rupture: little troll with applying rupture on target without breaking gouge (creatures only, pvp - restealth)
-+            if (GetSpell(RUPTURE_1) && !stealthed && !shadowdance && comboPoints > 1 && HasRole(BOT_ROLE_DPS) &&
++            if (GetSpell(RUPTURE_1) && !stealthed && !shadowdance && HasRole(BOT_ROLE_DPS) &&
++                comboPoints > ((hasHunger || !GetSpell(HUNGER_FOR_BLOOD_1)) ? 1 : 0) &&
++                !(hasHunger && _spec == BOT_SPEC_ROGUE_ASSASINATION && GetSpell(ENVENOM_1)) &&
 +                (hasnormalstun || (opponent->CanHaveThreatList() && duration < 2000)) &&
 +                (comboPoints < 4 || !GetSpell(KIDNEY_SHOT_1) || stunDivider > DIMINISHING_LEVEL_2) &&
 +                energy >= ecost(RUPTURE_1) && opponent->GetHealth() > me->GetMaxHealth() / 4 * (1 + opponent->getAttackers().size()) &&
@@ -38214,8 +38840,7 @@ index 0000000..03960d2
 +                //Kidney Shot
 +                if (GetSpell(KIDNEY_SHOT_1) && !stealthed && stunDivider < DIMINISHING_LEVEL_4 &&
 +                    Rand() < 80 && !CCed(opponent) &&
-+                    !(opponent->GetTypeId() == TYPEID_UNIT &&
-+                    (opponent->ToCreature()->GetCreatureTemplate()->MechanicImmuneMask & (1<<(MECHANIC_STUN-1)))) &&
++                    !opponent->IsImmunedToSpellEffect(sSpellMgr->GetSpellInfo(KIDNEY_SHOT_1), EFFECT_0, me) &&
 +                    ((comboPoints >= 4 && stunDivider < DIMINISHING_LEVEL_3 &&
 +                    (opponent->GetHealth() > me->GetMaxHealth() / 2 || opponent->GetTypeId() == TYPEID_PLAYER)) ||
 +                    opponent->IsNonMeleeSpellCast(false,false,true)) &&
@@ -38224,16 +38849,21 @@ index 0000000..03960d2
 +                    if (doCast(opponent, GetSpell(KIDNEY_SHOT_1)))
 +                        return;
 +                }
-+                //Eviscerate
-+                if (IsSpellReady(EVISCERATE_1, diff) && !stealthed && !shadowdance && HasRole(BOT_ROLE_DPS) &&
-+                    (comboPoints >= 4 || opponent->GetHealth() < me->GetMaxHealth() / 4) &&
-+                    energy >= ecost(EVISCERATE_1) && Rand() < (70 + comboPoints * 20))
++                //Envenom / Eviscerate
++                uint32 envescerate = (_spec == BOT_SPEC_ROGUE_ASSASINATION && GetSpell(ENVENOM_1) &&
++                    (opponent->GetHealth() > me->GetMaxHealth() / 5 || !GetSpell(EVISCERATE_1))) ? ENVENOM_1 : GetSpell(EVISCERATE_1) ? EVISCERATE_1 : 0;
++                if (envescerate && IsSpellReady(envescerate, diff) && !stealthed && !shadowdance && HasRole(BOT_ROLE_DPS) &&
++                    (comboPoints >= 4  || (envescerate == EVISCERATE_1 && opponent->GetHealth() < me->GetMaxHealth() / 4)) &&
++                    (envescerate != ENVENOM_1 ||
++                    (opponent->GetAuraEffect(SPELL_AURA_MOD_ATTACKER_SPELL_AND_WEAPON_CRIT_CHANCE, SPELLFAMILY_ROGUE, 0x10000, 0x0, 0x0, me->GetGUID()) &&
++                    (energy >= 110 || !me->HasAuraTypeWithFamilyFlags(SPELL_AURA_ADD_FLAT_MODIFIER, SPELLFAMILY_ROGUE, 0x800000)))) &&
++                    energy >= ecost(envescerate) && Rand() < (70 + comboPoints * 20))
 +                {
 +                    //Cold Blood (no GCD)
 +                    if (IsSpellReady(COLD_BLOOD_1, diff, false) && comboPoints > 3 && Rand() > 50 + 100*(comboPoints == 5))
 +                        if (doCast(me, GetSpell(COLD_BLOOD_1)))
 +                        {}
-+                    if (doCast(opponent, GetSpell(EVISCERATE_1)))
++                    if (doCast(opponent, GetSpell(envescerate)))
 +                        return;
 +                }
 +            }
@@ -38335,7 +38965,7 @@ index 0000000..03960d2
 +            }
 +            //Backstab/Mutilate
 +            uint32 mutistab =
-+                isdaggerMH && isdaggerOH && targetPoisoned && GetSpell(MUTILATE_1) ? MUTILATE_1 :
++                isdaggerMH && isdaggerOH && GetSpell(MUTILATE_1) ? MUTILATE_1 :
 +                isdaggerMH && GetSpell(BACKSTAB_1) ? BACKSTAB_1 : 0;
 +            if (mutistab && comboPoints < 4 && energy >= ecost(mutistab) && (mutistab == MUTILATE_1 || !opponent->HasInArc(M_PI, me)))
 +            {
@@ -38391,23 +39021,25 @@ index 0000000..03960d2
 +
 +            Item* mhWeapon = GetEquips(BOT_SLOT_MAINHAND);
 +            Item* ohWeapon = GetEquips(BOT_SLOT_OFFHAND);
-+            //item must be non-standard, otherwise combat spells won't be rolled anyway
++
 +            bool mhReady = mhWeapon && !mhWeapon->GetEnchantmentId(TEMP_ENCHANTMENT_SLOT);
 +            bool ohReady = ohWeapon && !ohWeapon->GetEnchantmentId(TEMP_ENCHANTMENT_SLOT);
 +            if (!mhReady && !ohReady)
 +                return; //no ecnhantable weapons
 +
 +            //OK choose the poisons
-+            //MH 20+ Instant, 32+ Wound
-+            //OH 20+ Crippling, 40+ Instant (deadly brew inc), 68+ Anesthetic
++            //MH 20+ Instant, 32+ Wound, envenom Instant
++            //OH 20+ Crippling, 40+ Instant (deadly brew inc), 68+ Anesthetic, envenom Deadly
 +            if (needChooseMHEnchant && mhReady)
-+                mhEnchant = me->GetLevel() >= 32 ? WOUND_POISON_1 :
-+                    me->GetLevel() >= 20 ? INSTANT_POISON_1 : 0;
++                mhEnchant = (_spec == BOT_SPEC_ROGUE_ASSASINATION && GetSpell(ENVENOM_1)) ? INSTANT_POISON_1 :
++                    lvl >= 32 ? WOUND_POISON_1 :
++                    lvl >= 20 ? INSTANT_POISON_1 : 0;
 +
 +            if (needChooseOHEnchant && ohReady)
-+                ohEnchant = me->GetLevel() >= 68 ? ANESTHETIC_POISON_1 :
-+                    me->GetLevel() >= 40 ? INSTANT_POISON_1 :
-+                    me->GetLevel() >= 20 ? CRIPPLING_POISON_1 : 0;
++                ohEnchant = (_spec == BOT_SPEC_ROGUE_ASSASINATION && GetSpell(ENVENOM_1)) ? DEADLY_POISON_1 :
++                    lvl >= 68 ? ANESTHETIC_POISON_1 :
++                    lvl >= 40 ? INSTANT_POISON_1 :
++                    lvl >= 20 ? CRIPPLING_POISON_1 : 0;
 +
 +            uint32 MhPoison = !mhReady ? 0 : GetSpell(mhEnchant);
 +            uint32 OhPoison = !ohReady ? 0 : GetSpell(ohEnchant);
@@ -39104,7 +39736,8 @@ index 0000000..03960d2
 +            else if (spell->NeedsComboPoints() && comboPoints)
 +            {
 +                //uint32 tempCP = comboPoints;
-+                comboPoints = 0;
++                //comboPoints = 0;
++                combopointsSpent = true; //envenom problem - cps spent before aura application
 +
 +                //TC_LOG_ERROR("entities.player", "rogue_bot CP SPEND1: %u to 0", tempCP);
 +
@@ -39285,7 +39918,7 @@ index 0000000..03960d2
 +                }
 +            }
 +            //Cut to the Chase: Eviscerate and Envenom will refresh Slice and Dice duration as for 5 points
-+            if ((_spec == BOT_SPEC_ROGUE_ASSASINATION) && lvl >= 55 && (baseId == EVISCERATE_1/* || baseId == ENVENOM_1*/) && GetSpell(SLICE_DICE_1))
++            if (_spec == BOT_SPEC_ROGUE_ASSASINATION && lvl >= 55 && (baseId == EVISCERATE_1 || baseId == ENVENOM_1) && GetSpell(SLICE_DICE_1))
 +            {
 +                if (Aura* dice = me->GetAura(GetSpell(SLICE_DICE_1)))
 +                {
@@ -39302,11 +39935,6 @@ index 0000000..03960d2
 +            if (baseId == CHEAP_SHOT_1 || baseId == KIDNEY_SHOT_1 || baseId == GOUGE_1)
 +                if (target == opponent)
 +                    MoveBehind(target);
-+
-+            //Poison marker
-+            if (baseId == CRIPPLING_POISON_1 || baseId == DEADLY_POISON_PROC_1 ||
-+                baseId == WOUND_POISON_PROC_1 || baseId == MIND_NUMBING_POISON_PROC_1)
-+                targetPoisoned = true;
 +
 +            OnSpellHitTarget(target, spell);
 +        }
@@ -39411,8 +40039,8 @@ index 0000000..03960d2
 +        {
 +            energy = 0;
 +            comboPoints = 0;
++            combopointsSpent = false;
 +            glyphSSProc = false;
-+            targetPoisoned = false;
 +
 +            mhEnchantExpireTimer = 1;
 +            ohEnchantExpireTimer = 1;
@@ -39463,6 +40091,7 @@ index 0000000..03960d2
 +            InitSpellMap(BACKSTAB_1);
 +            InitSpellMap(SINISTER_STRIKE_1);
 +            InitSpellMap(EVISCERATE_1);
++            InitSpellMap(ENVENOM_1);
 +            InitSpellMap(RUPTURE_1);
 +            InitSpellMap(DEADLY_THROW_1);
 +            InitSpellMap(FAN_OF_KNIVES_1);
@@ -39653,9 +40282,9 @@ index 0000000..03960d2
 +
 +    private:
 +        bool glyphSSProc;
-+        bool targetPoisoned;
 +        int32 energy;
 +        uint8 comboPoints;
++        bool combopointsSpent;
 +        bool isdaggerMH, isdaggerOH;
 +        uint32 mhEnchantExpireTimer, ohEnchantExpireTimer;
 +        uint32 mhEnchant, ohEnchant;
@@ -49609,10 +50238,10 @@ index 0000000..b844e1c
 +}
 diff --git a/src/server/game/AI/NpcBots/botcommon.h b/src/server/game/AI/NpcBots/botcommon.h
 new file mode 100644
-index 0000000..4563482
+index 0000000..5809dd9
 --- /dev/null
 +++ b/src/server/game/AI/NpcBots/botcommon.h
-@@ -0,0 +1,1081 @@
+@@ -0,0 +1,1086 @@
 +#ifndef _BOTCOMMON_H
 +#define _BOTCOMMON_H
 +
@@ -49620,6 +50249,11 @@ index 0000000..4563482
 +NpcBot System by Trickerer (onlysuffering@gmail.com)
 +Original patch from: LordPsyan https://bitbucket.org/lordpsyan/trinitycore-patches/src/3b8b9072280e/Individual/11185-BOTS-NPCBots.patch
 +*/
++
++struct Position;
++
++typedef std::vector<std::pair<Position, float> > AoeSpotsVec;
++typedef std::vector<Position> AoeSafeSpotsVec;
 +
 +enum BotCommonValues
 +{
@@ -49997,7 +50631,7 @@ index 0000000..4563482
 +    BOT_TEXT_RANDOMPET_FEROCITY         = 70486, //"Random (Ferocity)"
 +    BOT_TEXT_RANDOMPET_TENACITY         = 70487, //"Random (Tenacity)"
 +    BOT_TEXT_SHOW_INVENTORY             = 70488, //"Show me your inventory"
-+    BOT_TEXT_AUTOEQUIP                  = 70489, //"Auto-equip..."
++    BOT_TEXT_AUTOEQUIP                  = 70489, //"Auto-equip"
 +    BOT_TEXT_SLOT_MH                    = 70490, //"Main hand"
 +    BOT_TEXT_SLOT_OH                    = 70491, //"Off-hand"
 +    BOT_TEXT_SLOT_RH                    = 70492, //"Ranged"
@@ -51534,10 +52168,10 @@ index 0000000..ddb6150
 +#endif
 diff --git a/src/server/game/AI/NpcBots/botdump.cpp b/src/server/game/AI/NpcBots/botdump.cpp
 new file mode 100644
-index 0000000..76c7688
+index 0000000..6f53c46
 --- /dev/null
 +++ b/src/server/game/AI/NpcBots/botdump.cpp
-@@ -0,0 +1,951 @@
+@@ -0,0 +1,946 @@
 +/*
 + * NpcBots Data Migration System by Trickerer (onlysuffering@gmail.com)
 + *
@@ -51566,6 +52200,7 @@ index 0000000..76c7688
 +# define CharacterDatabasePreparedStatement PreparedStatement
 +# define CharacterDatabaseTransaction SQLTransaction
 +# define WorldDatabaseTransaction SQLTransaction
++# define GenerateCreatureSpawnId() GenerateLowGuid(HIGHGUID_UNIT)
 +#endif //SCRIPT_VERSION_LAST
 +
 +class BotStringTransaction
@@ -51756,7 +52391,7 @@ index 0000000..76c7688
 +    s_disabled`,`equipMhEx`,`equipOhEx`,`equipRhEx`,`equipHead`,`equipShoulders`,`eq
 +    uipChest`,`equipWaist`,`equipLegs`,`equipFeet`,`equipWrist`,`equipHands`,`equipB
 +    ack`,`equipBody`,`equipFinger1`,`equipFinger2`,`equipTrinket1`,`equipTrinket2`,`
-+    equipNeck`) VALUES ('70027','2204','19','3','35',NULL,'4305063','4305032','0','0
++    equipNeck`) VALUES ('70027','2204','19','3','35','NULL','4305063','4305032','0','0
 +    ','4305069','4237321','4237326','4305049','4305067','4305055','0','4305054','430
 +    5029','4303835','0','0','0','0');
 +    */
@@ -51798,7 +52433,7 @@ index 0000000..76c7688
 +
 +                TC_LOG_ERROR("scripts", "import: ReGuidBotEquip no guidVal from %s offset %u!",
 +                    line.substr(begin_pos, end_pos - begin_pos).c_str(), uint32(ne_guid_offset));
-+                return false;
++                break;
 +            }
 +
 +            if (itemReguidMap.count(guidVal) == 0)
@@ -51917,7 +52552,7 @@ index 0000000..76c7688
 +    return true;
 +}
 +
-+inline bool ReGuidCreature(std::string& line, uint32& nextGuid)
++inline bool ReGuidCreature(std::string& line)
 +{
 +    /*
 +    INSERT INTO `item_instance` (`guid`,`id`,`map`,`spawnMask`,`phaseMask`,`position
@@ -51963,10 +52598,10 @@ index 0000000..76c7688
 +                return false;
 +            }
 +
++            uint32 nextGuid = sObjectMgr->GenerateCreatureSpawnId();
 +            //TC_LOG_ERROR("scripts", "import: ReGuidCreature replacing %u with %u", guidVal, nextGuid);
 +            line.replace(begin_pos, end_pos - begin_pos, ValToString(nextGuid));
 +
-+            ++nextGuid;
 +            reguidDone = true;
 +            break;
 +        }
@@ -52017,12 +52652,6 @@ index 0000000..76c7688
 +    fields = result->Fetch();
 +    static uint32 NextItemGuid = (*fields).GetUInt32() + 1;
 +    //TC_LOG_ERROR("scripts", "import: NextItemGuid %u", NextItemGuid);
-+    //creature guid
-+    result = WorldDatabase.Query("SELECT MAX(`guid`) FROM `creature`");
-+    ASSERT(result);
-+    fields = result->Fetch();
-+    static uint32 NextCreatureGuid = (*fields).GetUInt32() + 1;
-+    //TC_LOG_ERROR("scripts", "import: NextCreatureGuid %u", NextCreatureGuid);
 +
 +    CharacterDatabaseTransaction ctrans = CharacterDatabase.BeginTransaction();
 +    WorldDatabaseTransaction wtrans = WorldDatabase.BeginTransaction();
@@ -52149,7 +52778,7 @@ index 0000000..76c7688
 +                }
 +                break;
 +            case TABLE_TYPE_CREATURE:
-+                if (!ReGuidCreature(curExecLine, NextCreatureGuid))
++                if (!ReGuidCreature(curExecLine))
 +                {
 +                    TC_LOG_ERROR("scripts", "import: unable to reguid creature at line %u!", lineNum);
 +                    return BOT_DUMP_FAIL_FILE_CORRUPTED;
@@ -52813,10 +53442,10 @@ index 0000000..9d5cbd9
 +}
 diff --git a/src/server/game/AI/NpcBots/botmgr.cpp b/src/server/game/AI/NpcBots/botmgr.cpp
 new file mode 100644
-index 0000000..898cd49
+index 0000000..92bba36
 --- /dev/null
 +++ b/src/server/game/AI/NpcBots/botmgr.cpp
-@@ -0,0 +1,1425 @@
+@@ -0,0 +1,1437 @@
 +#include "bot_ai.h"
 +#include "botdpstracker.h"
 +#include "bot_Events.h"
@@ -52868,6 +53497,7 @@ index 0000000..898cd49
 +bool _displayEquipment;
 +bool _showCloak;
 +bool _showHelm;
++bool _sendEquipListItems;
 +bool _enableclass_blademaster;
 +bool _enableclass_sphynx;
 +bool _enableclass_archmage;
@@ -53012,6 +53642,7 @@ index 0000000..898cd49
 +    _displayEquipment       = sConfigMgr->GetBoolDefault("NpcBot.EquipmentDisplay.Enable", true);
 +    _showCloak              = sConfigMgr->GetBoolDefault("NpcBot.EquipmentDisplay.ShowCloak", true);
 +    _showHelm               = sConfigMgr->GetBoolDefault("NpcBot.EquipmentDisplay.ShowHelm", false);
++    _sendEquipListItems     = sConfigMgr->GetBoolDefault("NpcBot.Gossip.ShowEquipmentListItems", false);
 +    _enableclass_blademaster= sConfigMgr->GetBoolDefault("NpcBot.NewClasses.Blademaster.Enable", true);
 +    _enableclass_sphynx     = sConfigMgr->GetBoolDefault("NpcBot.NewClasses.ObsidianDestroyer.Enable", true);
 +    _enableclass_archmage   = sConfigMgr->GetBoolDefault("NpcBot.NewClasses.Archmage.Enable", true);
@@ -53117,6 +53748,11 @@ index 0000000..898cd49
 +bool BotMgr::ShowEquippedHelm()
 +{
 +    return _showHelm;
++}
++
++bool BotMgr::SendEquipListItems()
++{
++    return _sendEquipListItems;
 +}
 +
 +bool BotMgr::IsClassEnabled(uint8 m_class)
@@ -53242,6 +53878,11 @@ index 0000000..898cd49
 +    bot_ai* ai;
 +    bool partyCombat = IsPartyInCombat();
 +    bool restrictBots = RestrictBots(nullptr, false);
++
++    _aoespots.clear();
++    if (partyCombat)
++        bot_ai::CalculateAoeSpots(_owner, _aoespots);
++
 +    for (BotMap::const_iterator itr = _bots.begin(); itr != _bots.end(); ++itr)
 +    {
 +        //guid = itr->first;
@@ -54244,12 +54885,14 @@ index 0000000..898cd49
 +}
 diff --git a/src/server/game/AI/NpcBots/botmgr.h b/src/server/game/AI/NpcBots/botmgr.h
 new file mode 100644
-index 0000000..4252c13
+index 0000000..00b53e1
 --- /dev/null
 +++ b/src/server/game/AI/NpcBots/botmgr.h
-@@ -0,0 +1,183 @@
+@@ -0,0 +1,191 @@
 +#ifndef _BOTMGR_H
 +#define _BOTMGR_H
++
++#include "botcommon.h"
 +
 +class Creature;
 +class Map;
@@ -54310,6 +54953,7 @@ index 0000000..4252c13
 +        static bool DisplayEquipment();
 +        static bool ShowEquippedCloak();
 +        static bool ShowEquippedHelm();
++        static bool SendEquipListItems();
 +        static bool IsClassEnabled(uint8 m_class);
 +        static bool IsBotStatsLimitsEnabled();
 +        static bool IsPvPEnabled();
@@ -54410,6 +55054,9 @@ index 0000000..4252c13
 +        //CONFIRMEND UNSAFE (charmer,owner)
 +        static void TeleportBot(Creature* bot, Map* newMap, Position* pos);
 +
++        AoeSpotsVec const& GetAoeSpots() const { return _aoespots; }
++        AoeSpotsVec& GetAoeSpots() { return _aoespots; }
++
 +    private:
 +        static void _teleportBot(Creature* bot, Map* newMap, float x, float y, float z, float ori = 0.f);
 +        static void _reviveBot(Creature* bot, WorldLocation* dest = nullptr);
@@ -54426,6 +55073,8 @@ index 0000000..4252c13
 +        uint8 _attackRangeMode;
 +
 +        bool _botsHidden;
++
++        AoeSpotsVec _aoespots;
 +};
 +
 +void AddNpcBotScripts();
@@ -60192,7 +60841,7 @@ index 75dd4ab..4cb80ff 100644
              sLFGMgr->LeaveLfg(group->GetGUID());
              group->Disband();
 diff --git a/src/server/game/Entities/Creature/Creature.cpp b/src/server/game/Entities/Creature/Creature.cpp
-index eac1f31..7d2a50d 100644
+index eac1f31..93f5e68 100644
 --- a/src/server/game/Entities/Creature/Creature.cpp
 +++ b/src/server/game/Entities/Creature/Creature.cpp
 @@ -53,6 +53,11 @@
@@ -60349,7 +60998,19 @@ index eac1f31..7d2a50d 100644
      if (!player)                                             // normal creature, no player involved
          return;
  
-@@ -1677,6 +1758,24 @@ bool Creature::LoadFromDB(ObjectGuid::LowType spawnId, Map* map, bool addToMap,
+@@ -1633,6 +1714,11 @@ bool Creature::LoadFromDB(ObjectGuid::LowType spawnId, Map* map, bool addToMap,
+ 
+     m_deathState = ALIVE;
+ 
++    //npcbot: remove respawn time if any
++    if (IsNPCBotOrPet())
++        map->RemoveRespawnTime(SPAWN_TYPE_CREATURE, spawnId, nullptr, true);
++    //end npcbot
++
+     m_respawnTime = GetMap()->GetCreatureRespawnTime(m_spawnId);
+ 
+     if (!m_respawnTime && !map->IsSpawnGroupActive(data->spawnGroupData->groupId))
+@@ -1677,6 +1763,24 @@ bool Creature::LoadFromDB(ObjectGuid::LowType spawnId, Map* map, bool addToMap,
      // checked at creature_template loading
      m_defaultMovementType = MovementGeneratorType(data->movementType);
  
@@ -60374,7 +61035,7 @@ index eac1f31..7d2a50d 100644
      if (addToMap && !GetMap()->AddToMap(this))
          return false;
      return true;
-@@ -1690,6 +1789,11 @@ void Creature::SetCanDualWield(bool value)
+@@ -1690,6 +1794,11 @@ void Creature::SetCanDualWield(bool value)
  
  void Creature::LoadEquipment(int8 id, bool force /*= true*/)
  {
@@ -60386,7 +61047,7 @@ index eac1f31..7d2a50d 100644
      if (id == 0)
      {
          if (force)
-@@ -1836,6 +1940,11 @@ bool Creature::IsInvisibleDueToDespawn() const
+@@ -1836,6 +1945,11 @@ bool Creature::IsInvisibleDueToDespawn() const
      if (IsAlive() || isDying() || m_corpseRemoveTime > GameTime::GetGameTime())
          return false;
  
@@ -60398,7 +61059,7 @@ index eac1f31..7d2a50d 100644
      return true;
  }
  
-@@ -1949,6 +2058,11 @@ void Creature::setDeathState(DeathState s)
+@@ -1949,6 +2063,11 @@ void Creature::setDeathState(DeathState s)
  
      if (s == JUST_DIED)
      {
@@ -60410,7 +61071,7 @@ index eac1f31..7d2a50d 100644
          m_corpseRemoveTime = GameTime::GetGameTime() + m_corpseDelay;
  
          uint32 respawnDelay = m_respawnDelay;
-@@ -2421,6 +2535,11 @@ void Creature::SaveRespawnTime(uint32 forceDelay)
+@@ -2421,6 +2540,11 @@ void Creature::SaveRespawnTime(uint32 forceDelay)
      if (IsSummon() || !m_spawnId || (m_creatureData && !m_creatureData->dbData))
          return;
  
@@ -60422,7 +61083,7 @@ index eac1f31..7d2a50d 100644
      if (m_respawnCompatibilityMode)
      {
          RespawnInfo ri;
-@@ -2593,6 +2712,16 @@ void Creature::SendZoneUnderAttackMessage(Player* attacker)
+@@ -2593,6 +2717,16 @@ void Creature::SendZoneUnderAttackMessage(Player* attacker)
  
  uint32 Creature::GetShieldBlockValue() const                  //dunno mob block value
  {
@@ -60439,7 +61100,7 @@ index eac1f31..7d2a50d 100644
      return (GetLevel()/2 + uint32(GetStat(STAT_STRENGTH)/20));
  }
  
-@@ -3214,6 +3343,13 @@ void Creature::ReleaseSpellFocus(Spell const* focusSpell, bool withDelay)
+@@ -3214,6 +3348,13 @@ void Creature::ReleaseSpellFocus(Spell const* focusSpell, bool withDelay)
          if (!HasFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_DISABLE_TURN))
              ReacquireSpellFocusTarget();
      }
@@ -60453,7 +61114,7 @@ index eac1f31..7d2a50d 100644
      else // don't allow re-target right away to prevent visual bugs
          _spellFocusInfo.Delay = withDelay ? 1000 : 1;
  
-@@ -3377,3 +3513,318 @@ std::string Creature::GetDebugInfo() const
+@@ -3377,3 +3518,318 @@ std::string Creature::GetDebugInfo() const
          << " WaypointPath: " << GetWaypointPath() << " SpawnId: " << GetSpawnId();
      return sstr.str();
  }
@@ -63800,7 +64461,7 @@ index e78bbcb..591f003 100644
          bool IsAutoRepeat() const { return m_autoRepeat; }
          void SetAutoRepeat(bool rep) { m_autoRepeat = rep; }
 diff --git a/src/server/game/Spells/SpellEffects.cpp b/src/server/game/Spells/SpellEffects.cpp
-index e40b4dc..a1ab821 100644
+index e40b4dc..a882dea 100644
 --- a/src/server/game/Spells/SpellEffects.cpp
 +++ b/src/server/game/Spells/SpellEffects.cpp
 @@ -500,6 +500,17 @@ void Spell::EffectSchoolDMG(SpellEffIndex effIndex)
@@ -63843,7 +64504,7 @@ index e40b4dc..a1ab821 100644
 +                                    doses = combo;
 +
 +                                // Master Poisoner
-+                                Unit::AuraEffectList const& auraList = player->GetAuraEffectsByType(SPELL_AURA_MOD_AURA_DURATION_BY_DISPEL_NOT_STACK);
++                                Unit::AuraEffectList const& auraList = unitCaster->GetAuraEffectsByType(SPELL_AURA_MOD_AURA_DURATION_BY_DISPEL_NOT_STACK);
 +                                for (Unit::AuraEffectList::const_iterator iter = auraList.begin(); iter != auraList.end(); ++iter)
 +                                {
 +                                    if ((*iter)->GetSpellInfo()->SpellFamilyName == SPELLFAMILY_ROGUE && (*iter)->GetSpellInfo()->SpellIconID == 1960)
@@ -63862,7 +64523,7 @@ index e40b4dc..a1ab821 100644
 +                                        unitTarget->RemoveAuraFromStack(spellId, unitCaster->GetGUID());
 +
 +                                damage *= doses;
-+                                damage += int32(player->GetTotalAttackPowerValue(BASE_ATTACK) * 0.09f * combo);
++                                damage += int32(unitCaster->GetTotalAttackPowerValue(BASE_ATTACK) * 0.09f * combo);
 +                            }
 +
 +                            // Eviscerate and Envenom Bonus Damage (item set effect)
@@ -63900,9 +64561,9 @@ index e40b4dc..a1ab821 100644
                          damage += int32(caster->GetAmmoDPS() * caster->GetAttackTime(RANGED_ATTACK) * 0.001f);
                      }
 +                    //npcbot: calculate bot weapon damage
-+                    if (m_caster->GetTypeId() == TYPEID_UNIT && m_caster->ToCreature()->IsNPCBot())
++                    if (unitCaster->GetTypeId() == TYPEID_UNIT && unitCaster->ToCreature()->IsNPCBot())
 +                    {
-+                        if (Item* item = m_caster->ToCreature()->GetBotEquips(2/*BOT_SLOT_RANGED*/))
++                        if (Item* item = unitCaster->ToCreature()->GetBotEquips(2/*BOT_SLOT_RANGED*/))
 +                        {
 +                            ItemTemplate const* weaponTemplate = item->GetTemplate();
 +                            float dmg_min = 0.f;
@@ -63916,7 +64577,7 @@ index e40b4dc..a1ab821 100644
 +                                damage += int32(dmg_min);
 +                            else
 +                                damage += irand(int32(dmg_min), int32(dmg_max));
-+                            damage += int32(m_caster->ToCreature()->GetCreatureAmmoDPS() * weaponTemplate->Delay * 0.001f);
++                            damage += int32(unitCaster->ToCreature()->GetCreatureAmmoDPS() * weaponTemplate->Delay * 0.001f);
 +                        }
 +                    }
 +                    //end npcbot
@@ -64012,7 +64673,7 @@ index e40b4dc..a1ab821 100644
              // Mutilate (for each hand)
              else if (m_spellInfo->SpellFamilyFlags[1] & 0x6)
 diff --git a/src/server/game/Spells/SpellInfo.cpp b/src/server/game/Spells/SpellInfo.cpp
-index d3acdb9..888275c 100644
+index d3acdb9..367671c 100644
 --- a/src/server/game/Spells/SpellInfo.cpp
 +++ b/src/server/game/Spells/SpellInfo.cpp
 @@ -31,6 +31,10 @@
@@ -64077,7 +64738,17 @@ index d3acdb9..888275c 100644
      }
  
      return radius;
-@@ -3214,6 +3252,11 @@ int32 SpellInfo::CalcPowerCost(WorldObject const* caster, SpellSchoolMask school
+@@ -1693,6 +1731,9 @@ SpellCastResult SpellInfo::CheckTarget(WorldObject const* caster, WorldObject co
+ 
+     // corpseOwner and unit specific target checks
+     if (HasAttribute(SPELL_ATTR3_ONLY_TARGET_PLAYERS) && unitTarget->GetTypeId() != TYPEID_PLAYER)
++        //npcbot: allow to target bots
++        if (!(unitTarget->GetTypeId() == TYPEID_UNIT && unitTarget->ToCreature()->IsNPCBot()))
++        //end npcbot
+        return SPELL_FAILED_TARGET_NOT_PLAYER;
+ 
+     if (!IsAllowingDeadTarget() && !unitTarget->IsAlive())
+@@ -3214,6 +3255,11 @@ int32 SpellInfo::CalcPowerCost(WorldObject const* caster, SpellSchoolMask school
          }
      }
  
@@ -64896,10 +65567,10 @@ index 66da288..4a1f432 100644
  #define CLASSMASK_WAND_USERS ((1<<(CLASS_PRIEST-1))|(1<<(CLASS_MAGE-1))|(1<<(CLASS_WARLOCK-1)))
  
 diff --git a/src/server/worldserver/worldserver.conf.dist b/src/server/worldserver/worldserver.conf.dist
-index 6a51d91..f18b131 100644
+index 6a51d91..6df232c 100644
 --- a/src/server/worldserver/worldserver.conf.dist
 +++ b/src/server/worldserver/worldserver.conf.dist
-@@ -4089,3 +4089,253 @@ Metric.OverallStatusInterval = 1
+@@ -4089,3 +4089,278 @@ Metric.OverallStatusInterval = 1
  
  #
  ###################################################################################################
@@ -64915,6 +65586,7 @@ index 6a51d91..f18b131 100644
 +
 +NpcBot.Enable = 1
 +
++#
 +#    NpcBot.MaxBots
 +#        Description: Maximum number of bots allowed for players.
 +#        Default:     1
@@ -64922,12 +65594,14 @@ index 6a51d91..f18b131 100644
 +
 +NpcBot.MaxBots = 1
 +
++#
 +#    NpcBot.MaxBotsPerClass
 +#        Description: Maximum bots of each class allowed for players.
 +#        Default:     0 - no limit
 +
 +NpcBot.MaxBotsPerClass = 0
 +
++#
 +#    NpcBot.BaseFollowDistance
 +#        Description: Default bot follow distance.
 +#        Note:        This parameter determines bots' formation size, distance at which bots
@@ -64937,6 +65611,7 @@ index 6a51d91..f18b131 100644
 +
 +NpcBot.BaseFollowDistance = 30
 +
++#
 +#    NpcBot.XpReduction
 +#        Description: XP percent penalty for each bot used starting with second.
 +#        Example:     3 bots, xp reduction is 20: ((3-1)*20) = 40%, 60% exp gained only.
@@ -64945,6 +65620,7 @@ index 6a51d91..f18b131 100644
 +
 +NpcBot.XpReduction = 0
 +
++#
 +#    NpcBot.HealTargetIconsMask
 +#        Description: Icon number bitmask which bots use to search for additional
 +#                     targets to buff, heal and protect (out of party).
@@ -64962,6 +65638,7 @@ index 6a51d91..f18b131 100644
 +
 +NpcBot.HealTargetIconsMask = 0
 +
++#
 +#    NpcBot.TankTargetIconMask
 +#        Description: Icon number bitmask which bot tanks use to search for primary target.
 +#        Note:        While icon is active NPCBot tanks will ignore any other targets
@@ -64979,6 +65656,7 @@ index 6a51d91..f18b131 100644
 +
 +NpcBot.TankTargetIconMask = 0
 +
++#
 +#    NpcBot.DPSTargetIconMask
 +#        Description: Icon number bitmask which bots use to search for primary attack target.
 +#        Note:        While icon is active NPCBots will ignore any other targets
@@ -64998,6 +65676,7 @@ index 6a51d91..f18b131 100644
 +
 +NpcBot.DPSTargetIconMask = 0
 +
++#
 +#    NpcBot.Mult.Damage.Physical
 +#    NpcBot.Mult.Damage.Spell
 +#    NpcBot.Mult.Healing
@@ -65010,6 +65689,7 @@ index 6a51d91..f18b131 100644
 +NpcBot.Mult.Damage.Spell    = 1.0
 +NpcBot.Mult.Healing         = 1.0
 +
++#
 +#    NpcBot.Enable.Dungeon
 +#    NpcBot.Enable.Raid
 +#    NpcBot.Enable.BG
@@ -65028,6 +65708,7 @@ index 6a51d91..f18b131 100644
 +NpcBot.Enable.Arena         = 0
 +NpcBot.Enable.DungeonFinder = 1
 +
++#
 +#    NpcBot.Limit.Dungeon
 +#    NpcBot.Limit.Raid
 +#        Description: Enable/Disable instance players limitation rules for bots.
@@ -65044,6 +65725,7 @@ index 6a51d91..f18b131 100644
 +
 +NpcBot.Cost = 1000000
 +
++#
 +#    NpcBot.UpdateDelay.Base
 +#        Description: Base delay between bot AI update cycles (in milliseconds).
 +#        Note:        This parameter allows you to increase reaction time and slow down bots in general.
@@ -65053,6 +65735,7 @@ index 6a51d91..f18b131 100644
 +
 +NpcBot.UpdateDelay.Base = 0
 +
++#
 +#    NpcBot.PvP
 +#        Description: Allow bots to attack player-controlled units (players, pets, bots, etc.).
 +#        Note:        This rule only applies to player-controlled bots.
@@ -65060,6 +65743,7 @@ index 6a51d91..f18b131 100644
 +
 +NpcBot.PvP = 1
 +
++#
 +#    NpcBot.Movements.InterruptFood
 +#        Description: Remove food and drink auras when starting to move.
 +#        Note:        Bots don't use food or drink if not standing still.
@@ -65068,6 +65752,7 @@ index 6a51d91..f18b131 100644
 +
 +NpcBot.Movements.InterruptFood = 0
 +
++#
 +#    NpcBot.EquipmentDisplay.Enable
 +#        Description: Enable displaying equipment changes other than weapons on bot models.
 +#        Note:        Client limits equipment updates to
@@ -65085,6 +65770,7 @@ index 6a51d91..f18b131 100644
 +
 +NpcBot.EquipmentDisplay.Enable = 1
 +
++#
 +#    NpcBot.EquipmentDisplay.ShowCloak
 +#    NpcBot.EquipmentDisplay.ShowHelm
 +#        Description: Equipment display rules.
@@ -65094,6 +65780,15 @@ index 6a51d91..f18b131 100644
 +NpcBot.EquipmentDisplay.ShowCloak = 1
 +NpcBot.EquipmentDisplay.ShowHelm  = 1
 +
++#
++#    NpcBot.Gossip.ShowEquipmentListItems
++#        Description: Send whisper message with clickable items list in equipment gossip menu.
++#        Default:     0 - (Disable)
++#                     1 - (Enable)
++
++NpcBot.Gossip.ShowEquipmentListItems = 0
++
++#
 +#    NpcBot.NewClasses.<Class>.Enable
 +#        Description: Allow players to hire bots of non-standard classes.
 +#        Note:        Some bot abilities may be unbalanced or game breaking under certain circumstances.
@@ -65111,6 +65806,7 @@ index 6a51d91..f18b131 100644
 +NpcBot.NewClasses.SpellBreaker.Enable      = 1
 +NpcBot.NewClasses.DarkRanger.Enable        = 1
 +
++#
 +#    NpcBot.Stats.Limits.Enable
 +#        Description: Enable or disable stats limits for bots.
 +#        Default:     0 - Disabled
