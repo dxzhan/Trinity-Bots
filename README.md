@@ -1,6 +1,6 @@
 ### This mod was last updated:
-### TC: 28 Oct 2022, [4d4f3a9c6f](https://github.com/trickerer/TrinityCore-3.3.5-with-NPCBots/commit/4d4f3a9c6f)
-### AC: 28 Oct 2022, [f38c198217](https://github.com/trickerer/AzerothCore-wotlk-with-NPCBots/commit/f38c198217)
+### TC: 26 Nov 2022, [dd43e6b8f6](https://github.com/trickerer/TrinityCore-3.3.5-with-NPCBots/commit/dd43e6b8f6)
+### AC: 26 Nov 2022, [d5d1046054](https://github.com/trickerer/AzerothCore-wotlk-with-NPCBots/commit/d5d1046054)
 
 ### Have questions? Found a bug? [Issues](https://github.com/trickerer/Trinity-Bots/issues)
 
@@ -445,7 +445,7 @@ As you can see, you can gear up pretty much every slot on your NPCBot
 
 - `Auto-equip` will list out all the items you have in YOUR bags that the NPCBot can use. Clicking on one of those items will automatically give it to the NPCBot and equip it into the appropriate slot
 
-- `_(INDIVIDUAL GEAR SLOTS)_` will show you what they have equipped (if any), an option to use their old equipment (if any to start with) OR an unequip option (if you gave them some gear), a listing of any item in YOUR bags that the NPCBot can use in that slot and a BACK option. Selecting any of your bag items will automatically send that item to the NPCBot and have them equip it. The option to use old equipment or unequip gear will have the NPCBot RETURN the gear you gave them BACK to YOUR bags. They will then return to the default gear/state for that slot
+- `_(INDIVIDUAL GEAR SLOTS)_` will show you what they have equipped (if any), an option to use their old equipment (if any to start with) OR an unequip option (if you gave them some gear), a listing of any item in YOUR bags that the NPCBot can use in that slot and a BACK option. Selecting any of your bag items will automatically send that item to the NPCBot and have them equip it. The option to use old equipment or unequip gear will have the NPCBot RETURN the gear you gave them BACK to YOUR bags. They will then return to the default gear/state for that slot. You can also transmogrify items in displayed gear slots (if this feature is enabled) using items you have in your inventory/bags, refer to worldserver config for transmog rules
 
 - `Unequip all` will have them do just that... dump __ALL__ gear you have given them back into YOUR bags. If you don't have enough space in your bags the excess items will be mailed to you.  NOTE: When firing an NPCBot, any gear you have given your NPCBot will automatically be returned to you
 
