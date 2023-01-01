@@ -1,6 +1,6 @@
 ### This mod was last updated:
-### TC: 24 Dec 2022, [f2803a93b8](https://github.com/trickerer/TrinityCore-3.3.5-with-NPCBots/commit/f2803a93b8)
-### AC: 24 Dec 2022, [80e22ec301](https://github.com/trickerer/AzerothCore-wotlk-with-NPCBots/commit/80e22ec301)
+### TC: 30 Dec 2022, [890af4b61a](https://github.com/trickerer/TrinityCore-3.3.5-with-NPCBots/commit/890af4b61a)
+### AC: 31 Dec 2022, [67738ed853](https://github.com/trickerer/AzerothCore-wotlk-with-NPCBots/commit/67738ed853)
 
 ### Have questions? Found a bug? [Issues](https://github.com/trickerer/Trinity-Bots/issues)
 
@@ -135,7 +135,7 @@ _TARGET_ indicates that command is used on a selected unit
     **Example Usage**:  
         - `.npcbot add`  
         - `.npcb add`  
-- **`remove _TARGET_`** -- (GM command) dismisses the NPCBot(s) from control  
+- **`remove _TARGET_`** -- (GM command) dismisses the NPCBot(s) from player's control. **Any bot removed via this command retains its gear**  
     - _TARGET_ = selected NPCBot (dismisses selected NPCBot)  
     - _TARGET_ = selected player (dismisses ALL NPCBots)  
     **Example Usage**:  
@@ -154,18 +154,18 @@ _TARGET_ indicates that command is used on a selected unit
     - _TARGET_ = selected NPCBot  
     **Example Usage**:  
         - `.npcbot move 70001` (moves NPCBot with ID 70001 to your position)  
-- **`delete`** -- (GM command)  
-    - **`_TARGET_`** -- deletes NPCBot from world, NPCBot is removed from owner if any and deleted from DB  
+- **`delete`** -- (GM command) deletes NPCBot from world, NPCBot is removed from its owner if any and deleted from DB. **Gear is given back to either the bot's owner (if there is one) or the player using the command**. If you need bot owner to **not** get the gear back, `.npcbot remove` the bot before deleting. Command will fail if used from the console on **unowned but geared** NPCBots  
+    - _TARGET_ -- deletes selected NPCBot  
         - _TARGET_ = selected NPCBot  
         **Example Usage**:  
             - `.npcbot delete`  
             - `.npcb del`  
-    - **`id _ID_`** -- deletes NPCBots using creature ID instead of targeting, usable from console  
+    - id _ID_ -- deletes NPCBots using creature ID instead of targeting, usable from the console  
         - _ID_ = creature ID (`creature_template`.`entry`)  
         **Example Usage**:  
             - `.npcbot delete id 70032`  
             - `.npcb del id 70032`  
-    - **`free`** -- deletes **ALL** unowned NPCBots, usable from console  
+    - free -- deletes **ALL** unowned NPCBots, usable from the console  
         **Example Usage**:  
             - `.npcbot delete free`  
             - `.npcb del f`  
@@ -876,7 +876,8 @@ NPCBot data is stored in the following locations:
 
 If you want to make changes to the static template data used for NPCBots, you make adjustments in the `world` database to those specific ids in the above tables (i.e. npcbot model, outfits, etc.)  
 **Do not** tinker with `characters` DB NPCBot tables, any bug reports containing accidently corrupted NPCBots installation will be discarded without notice  
-If you need to remove NPCBot mod completely you need to first manually delete every spawned bot in the world (using .npcbot delete command; you need to remove their equipment first, otherwise the items become inaccessible). Then delete `characters_npcbot`, `creature_template_npcbot_extras` and `creature_template_npcbot_appearance` tables and clean all other used tables of entries by id (70000-71000 + possibly more custom bot entries). `creature_template_outfits` can also be deleted if you are not using Npc Dress Mod.
+If you need to delete custom created NPCBot you need to first delete the bot from the world (using `.npcbot delete` command; you need to remove their equipment first, otherwise the items become inaccessible). Then delete by entry (creature id) from `creature_template_npcbot_extras`, `creature_template_npcbot_appearance` and `creature_equip_template` tables, and finally, from `creature_template`  
+If you need to remove NPCBot mod completely you need to first delete every spawned bot in the world (using `.npcbot delete` command). Then delete `characters_npcbot`, `characters_npcbot_group_member`, `characters_npcbot_transmog`, `creature_template_npcbot_extras` and `creature_template_npcbot_appearance` tables and clean all other used tables of entries by id (70000-71000 + possibly more custom bot entries). `creature_template_outfits` can also be deleted if you are not using Npc Dress Mod.
 
 #### Game World
 Bots are counted as active objects and keep map grids loaded like players
