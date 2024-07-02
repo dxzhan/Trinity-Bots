@@ -1,6 +1,7 @@
 ### This mod was last updated:
-### TC: 27 Aug 2023, [a7abceed89](https://github.com/trickerer/TrinityCore-3.3.5-with-NPCBots/commit/a7abceed89)
-### AC: 23 Aug 2023, [da30653363](https://github.com/trickerer/AzerothCore-wotlk-with-NPCBots/commit/da30653363)
+### TC: 29 Jun 2024, [1bb8e03f76](https://github.com/trickerer/TrinityCore-3.3.5-with-NPCBots/commit/1bb8e03f76)
+### AC: 29 Jun 2024, [4bdf5b7320](https://github.com/trickerer/AzerothCore-wotlk-with-NPCBots/commit/4bdf5b7320)
+### Update schedule: every Saturday 05:00 AM UTC+0
 
 ### Have questions? Found a bug? [Issues](https://github.com/trickerer/Trinity-Bots/issues)
 
@@ -42,6 +43,8 @@ This manual is created to officially state the purpose and explain the usage of 
 
 ---------------------------------------
 ## NPCBOTS
+NPCBots player manual is [available on youtube](https://www.youtube.com/watch?v=fByzoyl3rCY), by **QT Blue-AI**
+
 NPCBots are hireable pet-like minions (with some exceptions). You don't have full control over them, but you can tune their behavior in many ways. Bots will follow you around, buff you, defend you and help you in general. Their main purpose is to support players during their leveling although they can do dungeons and raids, but expect them being stupid in there
 
 Features of the NPCBots:  
@@ -307,12 +310,12 @@ _ARGUMENT_  indicates argument names
     **Example Usage:**  
         - `.npcbot vehicle eject`  
         - `.npcb veh e`  
-- **`go _ENTRY_`** -- (Admin command) allows you to teleport to NPCBot's current location, similar to `.appear` command for players. Be careful as this command may occasionally teleport you below ground level due to creature pathing errors  
+- **`go _ENTRY_`** -- (GM command) allows you to teleport to NPCBot's current location, similar to `.appear` command for players. Be careful as this command may occasionally teleport you below ground level due to creature pathing errors  
     - _ENTRY_ = creature ID  
     **Example Usage:**  
         - `.npcbot go 70855` (teleport to NPCBot 70855)  
         - `.npcb go 70855`  
-- **`wp`** -- (Admin command) a set of development commands for manipulating free-roaming bots wander points. If you wish to use them see the code  
+- **`wp`** -- (GM command) a set of development commands for manipulating free-roaming bots wander points. If you wish to use them see the code  
     - **`spawnall`**  
     - **`move`**  
     - **`add`**  
@@ -340,6 +343,12 @@ _ARGUMENT_  indicates argument names
         **Example Usage:**  
             - `.npcbot dump load bots_backup` (load from `bots_backup.sql`)  
             - `.npcb du l 1.txt` (load from `1.txt`)  
+- **`log`** (Admin command)  
+    - **`clear`** -- clears `characters_npcbot_logs` table (and resets autoincrement)  
+        - (No arguments)  
+        **Example Usage:**  
+            - `.npcbot log clear  
+            - `.npcb log c  
 - **`createnew <_NAME_> <_CLASS_> _RACE_ _GENDER_ _SKIN_ _FACE_ _HEARSTYLE_ _HAIRCOLOR_ _FEATURES_ _SOUNDSET_`** -- (Admin command) allows you to create new NPCBots for players to use. Creature ids 70800+ are used for that.  
     - _NAME_ = name of created NPCBot. Note that first letter will always be in Upper Case, *name_containing_spaces_must_be_underscored*  
     - _CLASS_ = this refers to NPCBot class. Use `.npcbot lookup` comand to list all available classes  
@@ -360,8 +369,8 @@ _ARGUMENT_  indicates argument names
     - _SKIN_, _FACE_, _HEARSTYLE_, _HAIRCOLOR_, _FEATURES_ = appearance details, `0` and up. Different race/gender combinations have different constraints for visuals, use `.npcbot createnew ranges` to see them  
     - _SOUNDSET_ = NPC voice variant for bot to use. There are 3 variants for each race, by default the choice is random  
     **Example Usage:**  
-        - `.npcbot createnew Selendris 2 10 1 6 4 3 2 4` (creates a female redhead Blood Elf mage npcbot)  
-        - `.npcb cre Selendris 2 10 1 6 4 3 2 4` (creates a female redhead Blood Elf mage npcbot)  
+        - `.npcbot createnew Selendris 8 10 1 6 4 3 2 4` (creates a female redhead Blood Elf mage npcbot)  
+        - `.npcb cre Selendris 8 10 1 6 4 3 2 4` (creates a female redhead Blood Elf mage npcbot)  
         - `.npcb createnew ranges` (prints visuals constraints for all races)  
 
 ### NPCBot Control and Usage
@@ -620,9 +629,11 @@ If you tell your NPCBots to avoid frontal AOE they will try to position themselv
 `Engage behavior...` submenu is used to manage bots' behaviour when combat is initiated:
 ```
 - Delay attack by: X.XXs
+- Heal target health threshold: XX%
 - BACK
 ```
-Attack delay is time (in seconds) your `DPS` NPCBots will wait before they start attacking. **This does not apply to Tanks and Healers**
+Attack delay is time (in seconds) your `DPS` NPCBots will wait before they start attacking. **This does not apply to Tanks and Healers**  
+Heal threshold is a unit health percentage, friendly units at which or below will be considered a viable heal target for your NPCBot. This is a way to tell your DPS+Heal bots to not heal anyone unless it's *really* needed. This parameter is individual to each bot. **Only available to Healers**
 
 `Priority target (<Role>)...` allows you to set main target for each bot individually and by role:
 ```
@@ -686,9 +697,10 @@ Mage NPCBots will give you:
 - I need food
 - I need drink
 - I need a refreshment table
+- I need a portal
 ```
 These options will summon a stack of food or drink for you  
-If your level is high enough, the mage NPCBot can summon a refreshment table
+If your level is high enough, the mage NPCBot can summon a refreshment table and portals for you and your group
 
 Warlock NPCBots will present the options:
 ```
@@ -728,7 +740,7 @@ If some config settings look ambiguous this section may be of help to you
     - Not saved between log-ins  
     Explanation. Bots group around you in a formation where tanks are in front, melee are on the sides and ranged are in the back. The distance they keep from you is not changed if value of this parameter is 30 or less. Past 30 it is increased linearly up to additional 10 yards between you and a your bots. The distance at which bots start attacking incoming enemies is determined by this parameter as well. This is distance between *player* (or *bot*, if stationed) and the enemy and is about 75% of this paramenter's value. If bot's attack target moves outside of this range bot stops attacking it (unless you attack this target as well) and retreats. **This means** that if this parameter is set low bot actions and chase movement may become erratic. If this parameter is set to **0** bots will act passively unless you point an attack targets (with your melee attack, only works in combat); this may be useful in case you want bots to attack and retreat, or in situation where blind attack is dangerous and you need bots to attack only targets you want them to. **Auto-attack spells like Autoshot or Shoot Wand cancel your melee attack**
 - **`NpcBot.XpReduction`**
-    - This parameter allows you to set XP gain percent penalty for players using bots during leveling
+    - This parameter allows you to set XP gain percent penalty for players using bots during leveling. When there is more than one player in a group the maximum number of bots hired by any player in group is used for XP reduction amount calculation
     - Value range: **0-90**  
     Explanation. XP amount is reduced by a percentage for every used bot after first one (it doesn't matter if bots are in group with player or not). Two bots are able to do much more damage than one player, especially at low levels. Bots also open great potential for grind. So you may want to punish your players a little. The formula is: **(100 - X \* (Y - 1))%** XP gained, where **X** is XP reduction and **Y** is bots count. *Example: XP reduction is 10, bots count = 4; XP gained: 100 - 10 * (4 - 1) = 70% XP gained*. In any case, overall XP reduction from this parameter will never exceed 90%. **This penalty only applies to bots' owner**
 - **`NpcBot.HealTargetIconsMask`**
