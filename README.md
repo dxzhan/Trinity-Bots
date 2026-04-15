@@ -1,6 +1,6 @@
 ### This mod was last updated:
-### TC: 11 Jan 2025, [c39b35eb32](https://github.com/trickerer/TrinityCore-3.3.5-with-NPCBots/commit/c39b35eb32)
-### AC: 11 Jan 2025, [f9e5113e17](https://github.com/trickerer/AzerothCore-wotlk-with-NPCBots/commit/f9e5113e17)
+### TC: 11 Apr 2026, [3243d8d0ab](https://github.com/trickerer/TrinityCore-3.3.5-with-NPCBots/commit/3243d8d0ab)
+### AC: 11 Apr 2026, [d6fe164649](https://github.com/trickerer/AzerothCore-wotlk-with-NPCBots/commit/d6fe164649)
 ### Update schedule: every Saturday 05:00 AM UTC+0
 
 ### Have questions? Found a bug? [Issues](https://github.com/trickerer/Trinity-Bots/issues)
@@ -91,24 +91,19 @@ Features of the NPCBots:
 - If you still prefer to patch the core yourself, clone both TrinityCore and Trinity-Bots using
   - `git clone https://github.com/TrinityCore/TrinityCore.git -b 3.3.5 --depth 1`
   - `git clone https://github.com/trickerer/Trinity-Bots.git`
-- Installing NPCBots is not much different from clean install so regardless of the chosen installation method follow [TrinityCore Installation Guide](https://TrinityCore.info/) to install the server to the point before it asks you to run it
+- Installing NPCBots is not much different from clean install so regardless of the chosen installation method follow [TrinityCore Installation Guide](https://TrinityCore.info/) to install the server to the point where it asks you to run it
 - Now if you used a pre-patched repo jump to step `5`, otherwise keep on reading
 
 1. Copy `Trinity-Bots/NPCBots.patch` file to your `TrinityCore` folder
 2. Apply the patch using `patch -p1 < NPCBots.patch` command (`git apply NPCBots.path` may not work)
 3. Re-run CMake and re-build
 4. Merge worldserver.conf.dist into your worldserver.conf file (copy NPCBot mod settings)
-5. Apply NPCBot SQL files from `/TrinityCore/sql/Bots/` to your DB (`auth_`, `characters_` and `world_` go to `auth`, `characters` and `world` DB respectively) using whichever way you prefer:
-  - using `merge_sqls_...` shell scripts and **_only_** applying created `ALL_auth.sql`, `ALL_characters.sql` and `ALL_world.sql` files OR
-  - manually applying each SQL file in their name order:
-    - 1_world_bot_appearance.sql
-    - 2_world_bot_extras.sql
-    - 3_world_bots.sql
-    - 4_world_generate_bot_equips.sql
-    - 5_world_botgiver.sql
-    - characters_bots.sql
-    - updates from `/TrinityCore/sql/Bots/updates/<DB>/` for each DB
-6. Run the server
+5. **Only if `Updates.AutoSetup` is set to 0 in config or if your base DBs are already created**. Apply NPCBot base DB SQL files from `TrinityCore/sql/base/` to appropriate DBs:
+  - auth_npcbot.sql
+  - characters_npcbot.sql
+  - world_npcbot.sql
+6. **Only if `Updates.EnableDatabases` is set to 0 in config**. Apply NPCBot SQL updates from `/TrinityCore/sql/custom/` to your DB (`auth/`, `characters/` and `world/` SQL files go to `auth`, `characters` and `world` DB respectively) one by one
+7. Run the server
 
 #### AzerothCore
 - **Pre-patched repository is [here](https://github.com/trickerer/AzerothCore-wotlk-with-NPCBots/)**. At the very beginning of this document you can find a link to its revision at a point where it was patched with the latest version of NPCBots. Clone it using
@@ -116,7 +111,7 @@ Features of the NPCBots:
 - If you still prefer to patch the core yourself, clone both AzerothCore and Trinity-Bots using
   - `git clone https://github.com/azerothcore/azerothcore-wotlk.git --depth 1`
   - `git clone https://github.com/trickerer/Trinity-Bots.git`
-- Installing NPCBots is not much different from clean install so regardless of the chosen installation method follow [AzerothCore Installation Guide](https://azerothcore.org/wiki/installation) to install the server to the point before it asks you to run it
+- Installing NPCBots is not much different from clean install so regardless of the chosen installation method follow [AzerothCore Installation Guide](https://azerothcore.org/wiki/installation) to install the server to the point where it asks you to run it
 - Now if you used a pre-patched repo jump to step `5`, otherwise keep on reading
 
 1. Copy `Trinity-Bots/AC/NPCBots.patch` file to your `azerothcore-wotlk` folder
@@ -233,10 +228,6 @@ _ARGUMENT_  indicates argument names
     **Example Usage:**  
         - `.npcbot revive`  
         - `.npcb rev`  
-- **`reloadconfig`** -- (GM command) reloads NPCBot system settings  
-    - (No arguments)  
-    **Example Usage:**  
-        - `.npcbot reloadconfig  
 - **`command`** -- (Player command) allows to manage your NPCBots positioning, movement and couple other things (by itself will display list of subcommands)  
     - **`follow _TARGET_`** -- set NPCBot(s) to FOLLOW mode  
         - **`only`** -- toggle INACTIVE mode for NPCBots. Inactive bots will not do anything but follow  
@@ -758,9 +749,9 @@ Lastly, all NPCBots will have the following extra options:
 `Nevermind` will simply close out the Gossip menu
 
 ### NPCBot Wander System
-Besides main purpose which is to assist players, NPCBots can also be used as autonomous units. Wandering bots spawn with gear, but are free of player's control and cannot be hired. Here is a list of features supported:  
+Besides their main purpose which is to assist players, NPCBots can also be used as autonomous units. Wandering bots spawn with gear, but are free of player's control and cannot be hired. Here is a list of features supported:  
 1. Wandering bots in open world. Config setting **`NpcBot.WanderingBots.Continents.Count`** controls desired amount of bots roaming world maps. Spawn points are random and level is selected accordingly. These bots give small reward for kill and bonus experience. See the config file for more info.  
-2. Wandering bots generated for Battlegrounds. Enabled by **`NpcBot.WanderingBots.BG.Enable`** setting, this feature allows to generate NPCBots to fill BG queue and partake in BG matches themselves. Bots can't fulfill BG objectives currently. Only Warsong Gulch and Arathi Basin are implemented currently.  
+2. Wandering bots generated for Battlegrounds. Enabled by **`NpcBot.WanderingBots.BG.Enable`** setting, this feature allows to generate NPCBots to fill BG queue and partake in BG matches.  
 
 ### NPCBot Config Settings
 If some config settings look ambiguous this section may be of help to you
@@ -1025,6 +1016,9 @@ Bots are being added to world at server loading (after Map System is started)
 
 ### NPCBot Addons
 For current version (3.3.5) there is a [NetherBot](https://github.com/NetherstormX/NetherBot) addon by NetherstormX
+
+### For supporters
+**If you really, really want to support me, visit [this boosty page](https://boosty.to/bad3dart). Even the samallest donation will let me know I'm doing the right thing here.**
 
 ---------------------------------------
 ## Guide Changelog
